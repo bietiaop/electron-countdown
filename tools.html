@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具箱</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/boxes.css">
+    <link rel="stylesheet" href="./css/tools.css">
+    <link rel="stylesheet" href="./fontawesome/css/all.min.css">
+</head>
+<body>
+    <div class="appcontainer">
+        <div class="appbar">
+            <div class="drag"></div>
+            <div class="item" id="min" onclick="ipcRenderer.send('tools-min')"></div>
+            <div class="item" id="max" onclick="ipcRenderer.send('tools-max')"></div>
+            <div class="item" id="close"  onclick="ipcRenderer.send('tools-close')"></div>
+        </div>
+        <div class="main">
+            <div class="list">
+                <div class="item" data-target="settings">
+                    <div class="icon">
+                        <i class="fad fa-cogs"></i>
+                    </div>
+                    <div class="title">
+                        设置
+                    </div>
+                </div>
+
+                <div class="item" data-target="weather">
+                    <div class="icon">
+                        <i class="fad fa-cloud"></i>
+                    </div>
+                    <div class="title">
+                        天气
+                    </div>
+                </div>
+
+                <div class="item" data-target="imagedown">
+                    <div class="icon">
+                        <i class="fad fa-images"></i>
+                    </div>
+                    <div class="title">
+                        随机壁纸
+                    </div>
+                </div>
+
+                <div class="item" onclick="alert('还未实现')">
+                    <div class="icon">
+                        <i class="fad fa-music"></i>
+                    </div>
+                    <div class="title">
+                        内置音乐
+                    </div>
+                </div>
+
+                <div class="item" data-target="updateWin">
+                    <div class="icon">
+                        <i class="fad fa-arrow-circle-up"></i>
+                    </div>
+                    <div class="title">
+                        检查更新
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>window.$ = window.jQuery = require("./js/jquery.min");</script>
+    <script src="./js/boxes.jquery.js"></script>
+    <script src="./js/common.js"></script>
+    <script>
+    $(document).on("keydown",function(event){
+        if(event.which==48||event.which==96){
+            $(".main .list .item")[9].click();
+        }
+        if(49<=event.which<=57){
+            if($(".main .list .item")[(event.which-49)]){
+                $(".main .list .item")[(event.which-49)].click();
+            }
+        }
+        if(97<=event.which<=105){
+            if($(".main .list .item")[(event.which-97)]){
+                $(".main .list .item")[(event.which-97)].click();
+            }
+        }
+    //   if(event.which==49){
+    //     tip("打开设置");
+    //     $(".openSetting").click();
+    //   }
+      if(event.which==115){
+        tip("关闭工具窗口");
+        closeWin('tools-close');
+      }
+      if(event.which==116){
+        tip("刷新工具窗口");
+        ipcRenderer.send('toolsReload');
+      }
+    //   if(event.which==121){
+    //     tip("打开更新");
+    //     ipcRenderer.send('updateWin');
+    //   }
+    //   tip(event.which)
+    });
+    var scroll_width = 100;
+	var scroll_events = "mousewheel DOMMouseScroll MozMousePixelScroll";
+	$(".list").on(scroll_events, function(e) {
+		var delta = e.originalEvent.wheelDelta;
+		if(delta > 0) {
+			$(".list").scrollLeft($(".list").scrollLeft() - scroll_width);
+		}
+		else {
+			$(".list").scrollLeft($(".list").scrollLeft() + scroll_width);
+		}
+	});
+    $(".main .list .item").click(function(){
+        var target = $(this).data("target");
+        ipcRenderer.send(target);
+    })
+    ipcRenderer.send("check-update");
+    ipcRenderer.on('UpdateMsg', (event, arg) => {
+        switch (arg.state) {
+            case 1:
+                $(".main .list .item[data-target=updateWin] .icon").prepend('<div class="icondot"></div>')
+                break;
+            default:
+                break;
+        }
+    });
+    </script>
+</body>
+</html>

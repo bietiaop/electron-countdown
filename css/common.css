@@ -1,0 +1,404 @@
+@charset 'utf-8';
+@import url("./boxes.css");
+/* @import url("https://cdn.jsdelivr.net/npm/fontawesome5pro@5.14.0/css/all.min.css"); */
+@font-face {
+    font-family: 'genshin';
+    src: url('../genshin.ttf');
+}
+@font-face {
+    font-family: 'OPPO Sans';
+    src: url('../fonts/OPPOSans-R.ttf');
+    font-weight: 400;
+}
+@font-face {
+    font-family: 'OPPO Sans';
+    src: url('../fonts/OPPOSans-L.ttf');
+    font-weight: 200;
+}
+@font-face {
+    font-family: 'OPPO Sans';
+    src: url('../fonts/OPPOSans-M.ttf');
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'OPPO Sans';
+    src: url('../fonts/OPPOSans-B.ttf');
+    font-weight: 600;
+}
+@font-face {
+    font-family: 'OPPO Sans';
+    src: url('../fonts/OPPOSans-H.ttf');
+    font-weight: 800;
+}
+::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width : 0px;  /*高宽分别对应横竖滚动条的尺寸*/
+    height: 0px;
+}
+/*数字输入框不显示增加减少按钮*/
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+} 
+input{
+    -moz-appearance:textfield;
+    outline: none !important;
+    cursor: default !important;
+}
+::placeholder {
+    color: rgb(204,204,204);
+}
+::-webkit-input-placeholder {
+    color: rgb(204,204,204);
+}
+::-moz-placeholder {
+    color: rgb(204,204,204);
+}
+:-moz-placeholder {
+    color: rgb(204,204,204);
+}
+:-ms-input-placeholder {
+    color: rgb(204,204,204);
+}
+/**/
+.ys_modal_item {
+    width: 95vw;
+    height: 90vh;
+    padding: 3vw;
+    border-radius: 2.7vw;
+    color: rgb(211,189,143);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    background: url("../img/gs-item/pattern.png") center /60% no-repeat #3E4557;
+    margin: 0px auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.ys_modal_item .smls:nth-child(1) {
+    content: '';
+    width: 4.5vw;
+    height: 4.5vw;
+    background: url("../img/gs-item/left-top.png") center no-repeat;
+    background-size: contain;
+    display: block;
+    position: absolute;
+    left: -1.6vw;
+    top: -1.7vw;
+}
+
+.ys_modal_item .smls:nth-child(2) {
+    content: '';
+    width: 4.5vw;
+    height: 4.5vw;
+    background: url("../img/gs-item/right-top.png") center no-repeat;
+    background-size: contain;
+    display: block;
+    position: absolute;
+    right: -1.5vw;
+    top: -1.4vw;
+}
+.ys_modal_item .smls:nth-child(3) {
+    content: '';
+    width: 4.5vw;
+    height: 4.5vw;
+    background: url("../img/gs-item/left-bottom.png") center no-repeat;
+    background-size: contain;
+    display: block;
+    position: absolute;
+    left: -1.5vw;
+    bottom: -1.4vw;
+}
+
+.ys_modal_item .smls:nth-child(4) {
+    content: '';
+    width: 4.5vw;
+    height: 4.5vw;
+    background: url("../img/gs-item/right-bottom.png") center no-repeat;
+    background-size: contain;
+    display: block;
+    position: absolute;
+    right: -1.4vw;
+    bottom: -1.6vw;
+}
+/*每一项的标题*/
+.ys_modal_item h1 {
+    font-size: 5vw;
+    font-weight: 500;
+    text-align: center;
+    font-family: 'genshin';
+    padding: 1vw 0;
+    margin: 0;
+    color: rgb(211,189,143);
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+.ys_modal_item h1::after {
+    content: '';
+    display: block;
+    height: 3vw;
+    width: 90%;
+    background: url("../img/gs-item/dvdl.png") center no-repeat;
+    background-size: contain;
+    margin: 0 auto;
+}
+
+.ys_modal_item .form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: 'genshin';
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+}
+.ys_modal_item .form .input {
+    position: relative;
+}
+.ys_modal_item .form .input input {
+    width: 70vw;
+    font-family: 'genshin';
+    padding: 0 1.6vw;
+    height: 5vw;
+    border-radius: 2em;
+    font-size: 2vw;
+    margin: 10px 0;
+    display: block;
+    outline: none;
+    border: 1px solid rgb(110,116,129);
+    box-shadow: 0px 0px 0px 2px #ffffff,0px 0px 0px 6px #3E4557,0px 0px 0px 7px rgb(110,116,129);
+}
+.ys_modal_item .form .input::before {
+    content: '';
+    width: 2.1vw;
+    height: 100%;
+    display: block;
+    position: absolute;
+    left: -2.15vw;
+    top: 0;
+    background: url("../img/gs-item/input_img_03.png") right center no-repeat;
+    background-size: contain;
+}
+.ys_modal_item .form .input::after {
+    content: '';
+    width: 2.1vw;
+    height: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: -2.2vw;
+    z-index: 999;
+    background: url("../img/gs-item/input_img_05.png") right center no-repeat;
+    background-size: contain;
+}
+.ys_modal_item .ysbtns {
+    width: 100%;
+    text-align: center;
+}
+.ys_modal_item .ysbtns::before {
+    content: '';
+    display: block;
+    height: 3vw;
+    width: 90%;
+    background: url('../img/gs-item/dvdl.png') center no-repeat;
+    background-size: contain;
+    margin: 0 auto;
+    top: -1vw;
+    position: relative;
+}
+.ysbtns button {
+    background: #EDE5D8;
+    border: none;
+    outline: none;
+    color: #3B4254;
+    font-family: 'genshin';
+    font-size: 3.2vw;
+    /* padding: 1.3vw 10vw; */
+    width: 33vw;
+    height: 7vw;
+    border-radius: 2em;
+    position: relative;
+    text-indent: 1.7em;
+    transition: 0.3s;
+    overflow: hidden;
+    margin: 0 5vw;
+}
+
+.ysbtns button:hover {
+    color: rgb(0, 0, 0);
+    text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 8px rgba(170, 170, 170, 0.8),0px 0px 5px rgba(170, 170, 170, 0.5);
+}
+.ysbtns button::before {
+    content: '';
+    display: block;
+    background: url("../img/button-o.png") center no-repeat #313131;
+    background-size: 65%;
+    text-indent: 0;
+    position: absolute;
+    width: 5.4vw;
+    height: 5.4vw;
+    left: 0.9vw;
+    top: 0.9vw;
+    text-align: center;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.ysbtns .closeBtn::before {
+    content: '';
+    display: block;
+    background: url("../img/gs-item/close.png") center no-repeat #313131;
+    background-size: 60%;
+    text-indent: 0;
+    position: absolute;
+    width: 5.4vw;
+    height: 5.4vw;
+    left: 0.9vw;
+    top: 0.9vw;
+    text-align: center;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.ysbtns button:hover::before {
+    color: rgb(131, 145, 185);
+}
+
+.ysbtns button:hover::after{
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 174, 0, 0.24);
+}
+
+.bottomBtns {
+    position: absolute !important;
+    bottom: 3vw;
+}
+/*整体*/
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: Roboto, 'genshin', "Noto Sans SC", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', 'OPPO SANS', 'dengxian', 'microsoft yahei', '等线', '微软雅黑', sans-serif;
+}
+body,html {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    font-family: Roboto, 'genshin', "Noto Sans SC", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', 'OPPO SANS', 'dengxian', 'microsoft yahei', '等线', '微软雅黑', sans-serif;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background: none;
+}
+body {
+    position: relative;
+    transform: scale(0.8);
+    transition: 0.3s;
+}
+/* body::before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: rgba(248, 165, 165, 0.8);
+    z-index: -1;
+    left: 0;
+    top: 0;
+} */
+/*remove recaptcha logo*/
+.grecaptcha-badge {
+    visibility: hidden;
+}
+
+
+
+.submitbtns {
+    text-align: center;
+    padding: 20px 0px;
+}
+.wbtn {
+    padding: 3px 40px;
+    background: rgba(255, 255, 255, 0.411);
+    border: 1px solid rgb(228, 228, 228);
+    border-bottom: 1px solid rgb(185, 185, 185);
+    color: rgb(255, 255, 255);
+    font-size: 1.3rem;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.wbtn:hover {
+    background: rgba(249, 249, 249, 0.555);
+}
+
+.wbtn:active {
+    background: rgba(233, 233, 233, 0.774);
+}
+.wtext {
+    padding: 5px 12px;
+    font-size: 1.1rem;
+    color: rgb(255, 255, 255);
+    background: rgba(255, 255, 255, 0.295);
+    border: 1px solid rgb(228, 228, 228);
+    border-radius: 5px;
+    cursor: text !important;
+}
+.textarea {
+    color: rgb(59, 59, 59);
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(228, 228, 228);
+    border-bottom: 1px solid rgb(104, 104, 104);
+    border-radius: 5px;
+    font-size: 1rem;
+    padding: 10px;
+    width: 100%;
+    resize: none;
+}
+.dot {
+    width: 0;
+    height: 0;
+    overflow: visible;
+    transition: 0.3s;
+}
+.dot::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: red;
+    position: relative;
+    left: 4.2em;
+    top: -1.5em;
+    display: block;
+    transition: 0.3s;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

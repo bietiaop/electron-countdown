@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>壁纸库</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/boxes.css">
+    <link rel="stylesheet" href="./css/imagedown.css">
+    <link rel="stylesheet" href="./fontawesome/css/all.min.css">
+</head>
+<body>
+    <div class="appcontainer">
+        <div class="appbar">
+            <div class="drag"></div>
+            <div class="item" id="min" onclick="ipcRenderer.send('imagedown-min')"></div>
+            <div class="item" id="max" onclick="ipcRenderer.send('imagedown-max')"></div>
+            <div class="item" id="close"  onclick="ipcRenderer.send('imagedown-close')"></div>
+        </div>
+        <div class="main">
+            <div class="img"></div>
+            <div class="tools">
+                <div class="item" data-hoverTip="下载图片" id="download"></div>
+                <div class="item" data-hoverTip="设为壁纸" id="setwallpaper"></div>
+                <div class="item" data-hoverTip="更换" id="change"></div>
+                <div class="item" data-hoverTip="适合屏幕" id="contain"></div>
+                <div class="item" data-hoverTip="覆盖屏幕" id="cover"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>window.$ = window.jQuery = require("./js/jquery.min");</script>
+    <script src="./js/boxes.jquery.js"></script>
+    <script src="./js/common.js"></script>
+    <script>
+    // ---- 下载类 ---- //
+    function StreamDownload() {
+      this.downloadCallback = null;
+      percentage = null;
+    }
+    StreamDownload.prototype.showProgress = function (received, total) {
+      percentage = (received * 100) / total;
+      this.downloadCallback('progress', percentage, 0, 0);
+    };
+    StreamDownload.prototype.downloadFile = function (fileName, patchUrl, baseDir, callback) {
+      this.downloadCallback = callback;
+      const downloadFile = fileName;
+      let receivedBytes = 0;
+      let totalBytes = 0;
+      const req = request({
+        method: 'GET',
+        uri: patchUrl
+      });
+      const out = fs.createWriteStream(path.join(baseDir, downloadFile));
+      req.pipe(out);
+      req.on('response', (data) => {
+        totalBytes = parseInt(data.headers['content-length'], 10);
+      });
+      req.on('data', (chunk) => {
+        receivedBytes += chunk.length;
+        this.showProgress(receivedBytes, totalBytes);
+      });
+      req.on('end', () => {
+        this.downloadCallback('finished', percentage, baseDir);
+      });
+    }
+    function mkdirs(dirname, callback) {  
+        fs.exists(dirname, function (exists) {  
+            if (exists) {  
+                callback();  
+            } else {
+                mkdirs(path.dirname(dirname), function () {  
+                    fs.mkdir(dirname, function(){
+                      fs.mkdir(dirname,callback)
+                    });
+                });  
+            }  
+        });  
+    }  
+    function download(url,dir,callback){
+      mkdirs(dir,function(){
+        downloads.downloadFile(path.basename(url),url,dir,callback)
+      })
+    }
+    let downloads = new StreamDownload();
+    function downloadFileCallback(arg, percentage, dir) {
+        if (arg === "progress") {
+            tip("已下载"+percentage)
+        } else if (arg === "finished") {
+          var path = require("path");
+            tip("下载完成，保存在:"+path.resolve(dir)+"\\"+path.basename($(".img").attr("data-img")));
+        }
+    }
+    function setWallpaperDownload(arg, percentage,dir) {
+        if (arg === "progress") {
+            tip("已下载"+percentage)
+        } else if (arg === "finished") {
+          tip("下载完成，保存在:"+path.resolve(dir)+"\\"+path.basename($(".img").attr("data-img")));
+          changeWallpaper(path.resolve(dir)+"\\"+path.basename($(".img").attr("data-img")))
+        }
+    }
+
+    $(".img").css({"background-size":"cover","background-position":"center","background-repeat":"no-repeat"})
+    $("#contain").click(()=>{
+      $(".img").css({"background-size":"contain"})
+    })
+    $("#cover").click(()=>{
+      $(".img").css({"background-size":"cover"})
+    })
+
+    function getImage() {
+      loading.start();
+      tip("图片加载可能较慢，请稍等");
+      $.ajax({
+        url:"https://www.dmoe.cc/random.php",
+        data: {"return":"json"},
+        type: "get",
+        success: function(data){
+          var imgload = new Image();
+          imgload.src = data.imgurl;
+          imgload.onerror = ()=>{
+            loading.end();
+            tip("图片加载失败");
+            getImage();
+          }
+          imgload.onload = function(){
+            loading.end();
+            if(this.complete){
+              $(".img").css({"background":'url("'+imgload.src+'")',"background-size":$(".img").css("background-size"),"background-position":"center","background-repeat":"no-repeat"});
+              $(".img").attr("data-img",imgload.src);
+            }
+          }
+        },
+        error: function(){
+          tip("获取失败");
+          getImage();
+        }
+      })
+    }
+    getImage();
+    $("#change").click(function(){
+      getImage();
+    })
+    
+    $("#download").click(function(){
+      tip("开始下载");
+      download($(".img").attr("data-img"), "../Downloads/Images/",downloadFileCallback)
+    })
+
+    $("#setwallpaper").click(function(){
+      tip("开始下载");
+      download($(".img").attr("data-img"), "../Downloads/Images/",setWallpaperDownload)
+    })
+  
+    $(document).on("keydown",function(event){
+      if(event.which==48||event.which==96){
+          $(".tools .item")[9].click();
+      }
+      if(49<=event.which<=57){
+          if($(".tools .item")[(event.which-49)]){
+              $(".tools .item")[(event.which-49)].click();
+          }
+      }
+      if(97<=event.which<=105){
+          if($(".tools .item")[(event.which-97)]){
+              $(".tools .item")[(event.which-97)].click();
+          }
+      }
+      if(event.which==115){
+        tip("关闭工具窗口");
+        closeWin('imagedown-close');
+      }
+      if(event.which==116){
+        $(".tools .item")[2].click();
+      }
+    })
+
+
+    
+    </script>
+</body>
+</html>

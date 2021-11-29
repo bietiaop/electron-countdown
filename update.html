@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更新</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/boxes.css">
+    <link rel="stylesheet" href="./css/update.css">
+</head>
+<body>
+    <div class="minwin" onclick="ipcRenderer.send('updateWin-min')"><span></span></div>
+    <div class="main">
+        
+        <div class="nav">
+            <div class="title">倒计时更新程序</div>
+            <div class="statue">还未实现更新功能</div>
+            <div class="downloadlinebox" style="display: none;">
+                <div class="downloadline">
+                    <div class="downloadprocess" style="width: 0%;"></div>
+                </div>
+                <div class="per">0%</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="btns">
+        <input type="button" class="download active" style="display: none;" name="" id="" value="下载">
+        <input type="button" class="update active" style="display: none;" name="" id="" value="更新">
+        <input type="button" class="cancel" onclick="closeWin('updateWin-close')" value="取消">
+    </div>
+    <script>window.$ = window.jQuery = require("./js/jquery.min");</script>
+    <script src="./js/boxes.jquery.js"></script>
+    <script src="./js/common.js"></script>
+    <script>
+        $(document).on("keydown",function(event){
+            if(event.which==115){
+                tip("关闭更新");
+                closeWin('updateWin-close');
+            }
+            if(event.which==116){
+                tip("刷新更新页面");
+                ipcRenderer.send("updateReload");
+            }
+            if(event.which==117){
+                tip("最小化");
+                ipcRenderer.send("updateWin-min");
+            }
+            if(event.which==13){
+                $(".active").click();
+            }
+        });
+        setTimeout(function(){
+            ipcRenderer.send("check-update");
+        },300)
+        
+        // ipcRenderer.on("message", (event, text) => {
+        //     $('.statue').html(text);
+        // });
+        ipcRenderer.on('UpdateMsg', (event, arg) => {
+            switch (arg.state) {
+                case -1:
+                    $('.statue').html("Error: "+arg.msg);
+                    $('.cancel').val("确定");
+                    $(".cancel").addClass("active");
+                    $('.download').removeClass("active");
+                    $('.update').removeClass("active");
+                    $('.cancel').css({"display":""});
+                    $('.download').css({"display":"none"});
+                    $('.update').css({"display":"none"});
+                    break;
+                case 0:
+                    $('.statue').html("正在检查更新");
+                    $(".cancel").addClass("active");
+                    $('.download').removeClass("active");
+                    $('.update').removeClass("active");
+                    break;
+                case 1:
+                    $('.statue').html("发现新版本"+arg.msg+"，是否现在下载？");
+                    $('.download').css({"display":""});
+                    $(".download").addClass("active");
+                    $('.cancel').removeClass("active");
+                    $('.update').removeClass("active");
+                    $('.download').click(function(){
+                        ipcRenderer.send("confirm-downloadUpdate");
+                    });
+                    break;
+                case 2:
+                    $('.statue').html("已是最新版本");
+                    $('.cancel').val("确定");
+                    $(".cancel").addClass("active");
+                    $('.download').removeClass("active");
+                    $('.update').removeClass("active");
+                    break;
+                case 3:
+                    $('.statue').html("正在下载");
+                    $(".downloadlinebox").css({"display":""});
+                    $(".downloadprocess").css({"width":arg.msg.percent.toFixed(1)+"%"});
+                    $(".per").text(arg.msg.percent.toFixed(1)+"%");
+                    $('.cancel').removeClass("active");
+                    $('.cancel').css({"display":"none"});
+                    $('.download').removeClass("active");
+                    $('.download').css({"display":"none"});
+                    $('.update').removeClass("active");
+                    $('.update').css({"display":"none"});
+                    break;
+                case 4:
+                    $(".downloadlinebox").css({"display":"none"});
+                    $('.statue').html("下载完成，是否现在重启更新？");
+                    $('.download').css({"display":"none"});
+                    $('.cancel').css({"display":""});
+                    $('.cancel').removeClass("active");
+                    $(".update").css({"display":""});
+                    $('.update').addClass("active");
+                    $('.download').css({"display":"none"});
+                    $('.download').removeClass("active");
+                    $(".update").click(function(){
+                        ipcRenderer.send("confirm-update");
+                    });
+                    break;
+                default:
+                    break;
+            }
+        });
+        
+        window.onunload=function(){
+            ipcRenderer.removeAll(["check-update", "UpdateMsg"])
+        }
+    </script>
+</body>
+</html>

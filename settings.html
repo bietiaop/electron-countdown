@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/boxes.css">
+    <link rel="stylesheet" href="./css/settings.css">
+</head>
+<body>
+    <audio id="audio" src='./jjdxy.flac' loop="true" hidden="true"></audio>
+    <div class="winbar">
+        
+        <div class="item refresh" onclick="ipcRenderer.send('setReload')"></div>
+        <div class="item close" onclick="closeWin('settings-close')"></div>
+        <div class="item avatar"><img src="./img/logo.png" alt="LOGO"></div>
+        <div class="item ptitle">
+            <div class="btitle">设置</div>
+            <div class="stitle">基本设置</div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="tab">
+            <div class="item active">基本设置</div>
+            <div class="item">时间设置</div>
+            <div class="item">一言设置</div>
+            <div class="item" id="about">关于<div style="display: none;" class="dot"></div></div>
+        </div>
+        <div class="content">
+            <div class="item show">
+                <div class="liitem">
+                    <div class="title">背景音乐</div>
+                    <div class="desc">开启或关闭设置页面的背景音乐，不支持自定义背景音乐</div>
+                    <div class="opt1">
+                        <div class="label">背景音乐</div>
+                        <div class="switch">
+                            <div class="switch-box" >
+                                <input id="bgmcb" type="checkbox" value="0"/>
+                                <label for="bgmcb"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="liitem">
+                    <div class="title">开机启动</div>
+                    <div class="desc">设置开机启动，注意：此选项不适用于Linux系统，Linux系统需手动设置开机启动</div>
+                    <div class="opt1">
+                        <div class="label">开机启动</div>
+                        <div class="switch">
+                            <div class="switch-box" >
+                                <input id="autostart" type="checkbox"  value="0" />
+                                <label for="autostart"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="liitem">
+                    <div class="title">检查更新</div>
+                    <div class="desc">开启或关闭打开程序的自动检查更新（若打开，程序启动发现更新时将自动弹出提示更新窗口）</div>
+                    <div class="opt1">
+                        <div class="label">自动检查更新</div>
+                        <div class="switch">
+                            <div class="switch-box" >
+                                <input id="autocheckupdate" type="checkbox" value="0"/>
+                                <label for="autocheckupdate"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gotolist">
+                    <div class="sitem" onclick="confirm('确定清空天气时间缓存吗',function(){clearWeatherCache()})">清除天气时间缓存</div>
+                    <div class="sitem" onclick="confirm('确定还原所有设置吗',function(){rollBackToDefault()})">恢复所有设置为默认值</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="liitem">
+                    <div class="title">倒计时内容</div>
+                    <div class="desc">设置倒计时标题等内容</div>
+                    <div class="opt2">
+                        <div class="label">标题</div>
+                        <div class="input">距离xxxx年
+                            <input class="wtext" type="text" id="bigtitle" placeholder="标题" maxlength="7" value="高考">还有xxx天
+                        </div>
+                    </div>
+                    <div class="opt2">
+                        <div class="label">精确时间标题</div>
+                        <div class="input">
+                            <input type="text" class="wtext" id="subtitle" placeholder="标题" maxlength="5" value="第一场考试">xx小时xx分钟xx秒
+                        </div>
+                    </div>
+                </div>
+
+                <div class="liitem">
+                    <div class="title">倒计时时间</div>
+                    <div class="desc">设置倒计时结束时间</div>
+                    <div class="opt2">
+                        <div class="label">日期</div>
+                        <div class="input">
+                            <input type="number" class="wtext" id="month" oninput="if(value>12)value=12;if(value<0)value=0" style="width: 3em;text-align: center;">月<input class="wtext" type="number" id="date" oninput="if(value>31)value=31;if(value<0)value=0" style="width: 3em;text-align: center;">日<input class="wtext" type="number" id="hour" oninput="if(value>23)value=23;if(value<0)value=0" style="width: 3em;text-align: center;">时<input class="wtext" type="number" id="minute" oninput="if(value>59)value=59;if(value<0)value=0" style="width: 3em;text-align: center;">分<input class="wtext" type="number" id="second" oninput="if(value>59)value=59;if(value<0)value=0" style="width: 3em;text-align: center;">秒
+                        </div>
+                    </div>
+                </div>
+
+                <div class="submitbtns">
+                    <input type="button" class="wbtn save save2" value="保存">
+                </div>
+            </div>
+            <div class="item">
+
+                <div class="liitem">
+                    <div class="title">一言</div>
+                    <div class="desc">设置每日一言</div>
+                    <div class="opt1">
+                        <div class="label">开启或关闭一言</div>
+                        <div class="switch">
+                            <div class="switch-box" >
+                                <input id="hitokotoSwitch" type="checkbox"  value="0" />
+                                <label for="hitokotoSwitch"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opt" id="hitokotoChangeTime">
+                        <div class="label">切换时间（秒），点击展开选项:</div>
+                        <div class="dropdown">
+                            <div class="select selecthitokototime">
+                                <div class="show" id="sec">20</div>
+                                <div class="selection" style="display: none;">
+                                    <span>1</span>
+                                    <span>3</span>
+                                    <span>5</span>
+                                    <span>7</span>
+                                    <span>10</span>
+                                    <span>15</span>
+                                    <span>20</span>
+                                    <span>30</span>
+                                    <span>60</span>
+                                    <span>300</span>
+                                    <span>600</span>
+                                    <span>2700</span>
+                                    <span>3300</span>
+                                    <span>3600</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opt2" id="hitokotoChangeType">
+                        <div class="label">设置一言类型</div>
+                        <div class="selectListSquare">
+                            <div class="slitem selected" data-type="a">动画</div>
+                            <div class="slitem" data-type="b">漫画</div>
+                            <div class="slitem" data-type="c">游戏</div>
+                            <div class="slitem" data-type="d">文学</div>
+                            <div class="slitem" data-type="e">原创</div>
+                            <div class="slitem" data-type="f">网络</div>
+                            <div class="slitem" data-type="g">其他</div>
+                            <div class="slitem" data-type="h">影视</div>
+                            <div class="slitem" data-type="i">诗词</div>
+                            <div class="slitem" data-type="j">网易云</div>
+                            <div class="slitem" data-type="k">哲学</div>
+                            <div class="slitem" data-type="l">抖机灵</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="liitem">
+                    <div class="title">鸣谢</div>
+                    <div class="content">
+                        感谢一言（Hitokoto）用爱发电，提供免费接口服务，一言网址：<a style="text-decoration: underline;" onclick="url('https://hitokoto.cn')">https://hitokoto.cn</a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="logoinfo">
+                    <div class="logo"><img src="./img/logo.png" alt="LOGO"></div>
+                    <div class="productName">倒计时</div>
+                    <div class="productVersion">by小惠</div>
+                </div>
+                <div class="gotolist">
+                    <div class="sitem" id="checkupdates" onclick="update()">检查更新<div style="display: none;" class="dot"></div></div>
+                    <div class="sitem" onclick="alert('将会把项目放进Github开源。在隐私条款生成之前使用软件造成的后果自己承担。')">隐私条款</div>
+                    <div class="sitem" onclick="alert('正在整理')">开源协议</div>
+                    <div class="sitem" onclick="browserUrl('http://cutdown.tempest.blue')">关于我们</div>
+                </div>
+                <div class="copyright">&copy; 2021 小惠(bietiaop) https://www.bietiaop.top All rights reserved.</div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="emoji"><img src="./img/hutao.gif" alt=""></div>
+    <script>window.$ = window.jQuery = require("./js/jquery.min");</script>
+    <script src="./js/boxes.jquery.js"></script>
+    <script src="./js/common.js"></script>
+    <script>
+
+        $(".productVersion").text(appVersion);
+
+        if(store.get("bgmcb")==true){
+            $("#audio")[0].play();
+        }else{
+            $("#audio")[0].pause();
+        }
+        $(".tab .item").click(function(){
+            $(".winbar .ptitle .stitle").text($(this).text());
+            $(".tab .active").removeClass("active");
+            $(this).addClass("active");
+            $('.content .item').eq($(this).index()).addClass('show');
+            $('.content .item').eq($(this).index()).siblings().removeClass('show');
+        })
+        $("#bgmcb").click(function(){
+            if(document.getElementById('bgmcb').checked){
+                store.set("bgmcb",true);
+                $("#audio")[0].play();
+            }else{
+                store.set("bgmcb",false);
+                $("#audio")[0].pause();
+            }
+        })
+        $("#autostart").click(function(){
+            if(document.getElementById('autostart').checked){
+                store.set("autostart",true);
+                ipcRenderer.send("enableAutoStart");
+            }else{
+                store.set("autostart",false);
+                ipcRenderer.send("disableAutoStart");
+            }
+        })
+        $("#autocheckupdate").click(function(){
+            if(document.getElementById('autocheckupdate').checked){
+                store.set("autoCheckUpdate",true);
+            }else{
+                store.set("autoCheckUpdate",false);
+            }
+        })
+        $("#hitokotoSwitch").click(function(){
+            if(document.getElementById('hitokotoSwitch').checked){
+                store.set("hitokotoSwitch",true);
+                $("#hitokotoChangeTime").show(100);
+            }else{
+                store.set("hitokotoSwitch",false);
+                $("#hitokotoChangeTime").hide(100);
+            }
+            ipcRenderer.send('mainReload');
+        })
+        setInterval (function () {
+            if(store.get('bgmcb')==true){
+                $("#bgmcb").prop("checked",true);
+            }else{
+                $("#bgmcb").prop("checked",false);
+            }
+            if(store.get('autostart')==true){
+                $("#autostart").prop("checked",true);
+            }else{
+                $("#autostart").prop("checked",false);
+            }
+            if(store.get('autoCheckUpdate')==false){
+                $("#autocheckupdate").prop("checked",false);
+            }else{
+                $("#autocheckupdate").prop("checked",true);
+            }
+            if(store.get('hitokotoSwitch')==false){
+                $("#hitokotoSwitch").prop("checked",false);
+                $("#hitokotoChangeTime").hide(100);
+                $("#hitokotoChangeType").hide(100);
+            }else{
+                $("#hitokotoSwitch").prop("checked",true);
+                $("#hitokotoChangeTime").show(100);
+                $("#hitokotoChangeType").show(100);
+            }
+            
+            if(store.get('hitokotoTime')&&store.get('hitokotoTime')!==""&&store.get('hitokotoTime')!==null){
+                $("#sec").text(store.get('hitokotoTime')/1000);
+            }
+            $("#hitokotoChangeType .selectListSquare .selected").removeClass("selected");
+            if(store.get("hitokotoType")&&store.get("hitokotoType")!=null&&store.get("hitokotoType").length>0){
+                for(i=0;i<store.get("hitokotoType").length;i++){
+                    $("#hitokotoChangeType .selectListSquare .slitem[data-type="+store.get("hitokotoType")[i]+"]").addClass("selected");
+                }
+            }
+            if(!store.get("hitokotoType")||store.get("hitokotoType")==null||store.get("hitokotoType").length==0){
+                $("#hitokotoChangeType .selectListSquare .slitem").addClass("selected");
+            }
+            
+            
+        }, 100)
+        if(store.get('bigtitle')&&store.get('bigtitle')!=null&&store.get('bigtitle')!=""){
+            $("#bigtitle").val(store.get('bigtitle'));
+        }else{
+            $("#bigtitle").val("高考");
+        }
+        if(store.get('subtitle')&&store.get('subtitle')!=null&&store.get('subtitle')!=""){
+            $("#subtitle").val(store.get('subtitle'));
+        }else{
+            $("#subtitle").val("");
+        }
+        let timeopt = new Object();
+        timeopt = {
+            month : 6,
+            date : 7,
+            hour : 0,
+            minute : 0,
+            second : 0
+        };
+        if(store.get("timeSet")&&store.get("timeSet")!=null&&store.get("timeSet")!=""){
+            let timeopt2 = {
+                month : store.get('timeSet.month'),
+                date : store.get('timeSet.date'),
+                hour : store.get('timeSet.hour'),
+                minute : store.get('timeSet.minute'),
+                second : store.get('timeSet.second')
+            }
+            function delEmpObj(obj){
+                Object.keys(obj).forEach(item=>{
+                    if(!obj[item])  delete obj[item]
+                })
+                return obj;
+            }
+            var timeopt3 = delEmpObj(timeopt2);
+            $.extend(timeopt,timeopt3)
+        }
+        
+        $("#month").val(timeopt.month);
+        $("#date").val(timeopt.date);
+        $("#hour").val(timeopt.hour);
+        $("#minute").val(timeopt.minute);
+        $("#second").val(timeopt.second);
+
+
+        $(".item .save2").click(function(){
+            confirm("确定要保存吗",function(){
+                store.set({
+                    timeSet: {
+                        month : $("#month").val(),
+                        date : $("#date").val(),
+                        hour : $("#hour").val(),
+                        minute : $("#minute").val(),
+                        second : $("#second").val()
+                    },
+                    bigtitle: $("#bigtitle").val(),
+                    subtitle: $("#subtitle").val()
+                })
+                alert("保存成功");
+                ipcRenderer.send('mainReload');
+            })
+        })
+        $("#hitokotoChangeType .selectListSquare .slitem").click(function(){
+            $(this).toggleClass("selected");
+            let hitokotoList = new Array();
+            for(i=0;i<$("#hitokotoChangeType .selectListSquare .selected").length;i++){
+                hitokotoList.push($($("#hitokotoChangeType .selectListSquare .selected")[i]).data("type"))
+            }
+            if(hitokotoList.length>=12){
+                hitokotoList=[];
+            }
+            store.set("hitokotoType",hitokotoList);
+            ipcRenderer.send('mainReload');
+        })
+        $(".selecthitokototime .selection span").click(function(){
+            $("#sec").text($(this).text());
+            store.set("hitokotoTime",$(this).text()*1000);
+            tip("修改成功")
+            ipcRenderer.send('mainReload');
+        })
+        function update() {
+            ipcRenderer.send('updateWin');
+        }
+        $(document).on("keydown",function(event){
+            if(event.which==115){
+                tip("关闭设置");
+                closeWin('settings-close');
+            }
+            
+        });
+
+
+        ipcRenderer.send("check-update");
+        ipcRenderer.on('UpdateMsg', (event, arg) => {
+            switch (arg.state) {
+                case 1:
+                    $("#about .dot").css({"display":""});
+                    $("#checkupdates .dot").css({"display":""});
+                    break;
+                default:
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

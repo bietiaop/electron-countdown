@@ -1,0 +1,213 @@
+@charset 'utf-8';
+.blbkg {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+}
+.confirmBox,.promptBox {
+    width: 400px;
+    max-width: 90%;
+    background: rgb(255,255,255);
+    margin: 0 auto;
+    border-radius: 3px;
+    padding: 40px 30px;
+    font-family: 'genshin';
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -o-transition: 0.3s;
+}
+.confirmBox *,.alertBox *,.promptBox * {
+    font-family: 'genshin';
+}
+.confirmBox .content,.promptBox .content {
+    text-align: center;
+    font-size: 1.2rem;
+    color: rgb(50,50,50);
+    padding: 10px 0px 50px 0px;
+}
+
+.confirmBox .btns,.alertBox .btnb,.promptBox .btns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    text-align: center;
+}
+.confirmBox .btns > button,.confirmBox .btns > input[type="button"],
+.promptBox .btns > button,.promptBox .btns > input[type="button"] {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0px 10px;
+    font-size: 1.1rem;
+    padding: 15px 0px;
+    color: rgb(219,187,96);
+    border-radius: 3px;
+    background: rgb(255,255,255);
+    transition: 0.3s;
+}
+.confirmBox .btns > button:hover,.confirmBox .btns > input[type="button"]:hover,
+.promptBox .btns > button:hover,.promptBox .btns > input[type="button"]:hover {
+    background: rgb(236,233,224);
+}
+.confirmBox .btns > button:nth-child(1),.confirmBox .btns > input[type="button"]:nth-child(1),
+.promptBox .btns > button:nth-child(1),.promptBox .btns > input[type="button"]:nth-child(1) {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0px 10px 0px 0px;
+    background: rgb(255,255,255);
+    border: 1px solid rgb(204,204,204);
+    color: rgb(219,187,96);
+}
+.confirmBox .btns > button:nth-child(1):hover,.confirmBox .btns > input[type="button"]:nth-child(1):hover,
+.promptBox .btns > button:nth-child(1):hover,.promptBox .btns > input[type="button"]:nth-child(1):hover {
+    background: rgb(236,233,224);
+}
+.confirmBox .btns > button:nth-last-child(1),.confirmBox .btns > input[type="button"]:nth-last-child(1),
+.promptBox .btns > button:nth-last-child(1),.promptBox .btns > input[type="button"]:nth-last-child(1) {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0px 0px 0px 10px;
+    background: rgb(58,59,64);
+    border: 1px solid rgb(58,59,64);
+    color: rgb(244,216,168);
+}
+.confirmBox .btns > button:nth-last-child(1):hover,.confirmBox .btns > input[type="button"]:nth-last-child(1):hover,
+.promptBox .btns > button:nth-last-child(1):hover,.promptBox .btns > input[type="button"]:nth-last-child(1):hover {
+    background: rgb(33,36,43);
+}
+.promptBox .content .input {
+    margin-top: 10px;
+}
+.promptBox .content .input input {
+    border: 1px solid rgb(230,230,230);
+    outline: none;
+    font-size: 1.1rem;
+    color: rgb(50,50,50);
+    padding: 15px 13px;
+    border-radius: 3px;
+    width: 100%;
+}
+.promptBox .content .input input:focus {
+    border: 1px solid rgb(50,50,50);
+}
+.alertBox {
+    width: 400px;
+    max-width: 90%;
+    background: rgb(255,255,255);
+    margin: 0 auto;
+    border-radius: 3px;
+    padding: 20px;
+    font-family: 'genshin';
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -o-transition: 0.3s;
+}
+.alertBox .content {
+    text-align: left;
+    font-size: 1.3rem;
+    color: rgb(50,50,50);
+    padding: 10px 0px 30px 0px;
+}
+
+.alertBox .btnb > button,.alertBox .btnb > input[type="button"] {
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 1.1rem;
+    padding: 10px 0px;
+    border-radius: 3px;
+    transition: 0.3s;
+    background: rgb(58,59,64);
+    border: 1px solid rgb(58,59,64);
+    color: rgb(244,216,168);
+}
+.alertBox .btnb > button:hover,.alertBox .btnb > input[type="button"]:hover {
+    background: rgb(33,36,43);
+}
+.loadingBox {
+    width: 120px;
+    height: 120px;
+    background: rgba(0,0,0,0.8);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loading {
+    width: 60%;
+    height: 60%;
+    background: url("../img/loading.png") center no-repeat;
+    background-size: cover;
+    animation: cycle 2s linear infinite;
+}
+.tipBox {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translate(-50%,0);
+    background: rgba(0,0,0,0.8);
+    color: rgb(255,255,255);
+    padding: 10px 30px;
+    max-width: 90%;
+    border-radius: 5px;
+    font-family: 'OPPO SANS',"Noto Sans SC", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', 'OPPO SANS', 'dengxian', 'microsoft yahei', '等线', '微软雅黑', sans-serif;
+    pointer-events: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    z-index: 999999999999;
+}
+@keyframes cycle{
+    0%{-webkit-transform:rotate(0deg);transform:rotate(0deg);-ms-transform:rotate(0deg);-moz-transform:rotate(0deg);;-o-transform:rotate(0deg);}
+    25%{-webkit-transform:rotate(90deg);transform:rotate(90deg);-ms-transform:rotate(90deg);-moz-transform:rotate(90deg);;-o-transform:rotate(90deg);}
+    50%{-webkit-transform:rotate(180deg);transform:rotate(180deg);-ms-transform:rotate(180deg);-moz-transform:rotate(180deg);;-o-transform:rotate(180deg);}
+    75%{-webkit-transform:rotate(270deg);transform:rotate(270deg);-ms-transform:rotate(270deg);-moz-transform:rotate(270deg);;-o-transform:rotate(270deg);}
+    100%{-webkit-transform:rotate(360deg);transform:rotate(360deg);-ms-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);}
+  }
+@media screen and (max-width: 500px) {
+    .tipBox {
+        padding: 10px 15px;
+    }
+}
+@media screen and (max-width: 220px) {
+    .confirmBox .btns {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+    }
+    .confirmBox .btns > button,input[type="button"] {
+        flex-grow: 1;
+        flex-shrink: 1;
+        margin: 3px 0px !important;
+        padding: 8px 0;
+    }
+    .confirmBox .btns > button:nth-child(1),input[type="button"]:nth-child(1) {
+        flex-grow: 1;
+        flex-shrink: 1;
+        margin: 3px 0px 0px 0px;
+    }
+    .confirmBox .btns > button:nth-last-child(1),input[type="button"]:nth-last-child(1) {
+        flex-grow: 1;
+        flex-shrink: 1;
+        margin: 0px 0px 3px 0px;
+    }
+}

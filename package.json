@@ -1,0 +1,55 @@
+{
+  "name": "countdown",
+  "version": "2.0.6",
+  "description": "countdown",
+  "main": "main.js",
+  "scripts": {
+    "build": "electron-builder --win --ia32"
+  },
+  "build": {
+    "productName": "countdown",
+    "appId": "top.bietiaop.countdown",
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://cutdown.tempest.blue/release"
+      }
+    ],
+    "copyright": "bietiaop",
+    "compression": "store",
+    "directories": {
+      "output": "build"
+    },
+    "asar": true,
+    "win": {
+      "icon": "./icon.ico",
+      "requestedExecutionLevel": "highestAvailable"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "./icon.ico",
+      "uninstallerIcon": "./icon.ico",
+      "installerHeaderIcon": "./icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "倒计时"
+    }
+  },
+  "keywords": [],
+  "author": "bietiaop",
+  "license": "ISC",
+  "dependencies": {
+    "electron-store": "^8.0.1",
+    "electron-updater": "^4.3.9",
+    "node-cmd": "^5.0.0",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "electron": "^16.0.2",
+    "electron-builder": "^22.14.5",
+    "electron-updater": "^4.3.9"
+  }
+}

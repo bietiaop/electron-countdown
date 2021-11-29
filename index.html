@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高考倒计时</title>
+    <link rel="stylesheet" href="./css/boxes.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+  <div class="ys_modal_item">
+      <span class="smls"></span>
+      <span class="smls"></span>
+      <span class="smls"></span>
+      <span class="smls"></span>
+      <div class="main">
+          <h1 class="text" style="-webkit-app-region: drag;user-select: none;">
+              距离<span id="year">？？？</span>年<span id="bigtitle">？？？</span>还有
+          </h1>
+          <div class="cutdown"><span id="day">？？？</span>天</div>
+          <span id="subtitle">？？？</span><span id="time"></span>
+      </div>
+      <div class="hitokoto">
+        <span class="line1"></span>
+        <span class="line"></span>
+        <div class="container">
+          <div class="stc">
+            <div id="hitokoto"></div>
+            <div id="author"></div>
+          </div>
+          <div class="btns">
+            <div class="item copyHitokoto" onclick="copyHitokoto()" id="copy"></div>
+            <div class="item regetHitokoto" onclick="regetHitokoto()" id="change"></div>
+          </div>
+        </div>
+        <span class="line"></span>
+        <span class="line3"></span>
+        <div class="datereport">
+            <div class="year">？</div>
+            <div class="month">？</div>
+            <div class="date">？</div>
+            <div class="day">？</div>
+            <div class="weather" onclick="ipcRenderer.send('weather')">？</div>
+        </div>
+      </div>
+      <!-- <div class="tools" style="-webkit-app-region: drag;user-select: none;">
+          <div class="item" id="reload" onclick="ipcRenderer.send('mainReload')"></div>
+          <div class="item" data-dot="none" class="settings" id="settings" onclick="ipcRenderer.send('settings')"><div style="display: none;" class="settingDot"></div></div>
+          <div class="item" id="close" onclick="closeWin('window-close')"></div>
+      </div> -->
+      <div class="ysbtns bottomBtns">
+        <button class="openTools" onclick="ipcRenderer.send('openTools')">工具箱<div class="ysdot" style="display: none;"></div></button>
+        <button class="closeBtn" onclick="closeWin('window-close')">关闭</button>
+      </div>
+  </div>
+    <script>window.$ = window.jQuery = require("./js/jquery.min");</script>
+    <script src="./js/boxes.jquery.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+    <script>
+        let ip = null;
+        if(returnCitySN){
+          ip = returnCitySN["cip"];
+        }
+        let charTimeDis = 5;
+        let adcode = null;
+        if(store.get("weather")&&store.get("weather")!=null){
+          let charWeatherStatue = store.get("weather");
+          let now = new Date();
+          let lastCheckWeather = new Date(charWeatherStatue["checkTime"]);
+          charTimeDis = parseInt(now - lastCheckWeather)/ 1000 / 60;
+        }
+        //minutes
+        function getAdcode(fun) {
+          var res = null;
+          $.ajax({
+                url:"https://restapi.amap.com/v3/ip",
+                data: {
+                  key: "6e7ecd868c360c9671180684d8ec0fa8"
+                },
+                success: function(data){
+                  if(data.status == "1" && data.infocode == "10000"){
+                    var nowCheckTime = new Date();
+                    store.set("adcode",data.adcode);
+                    if(fun&&typeof fun == "function") {
+                      fun(data.adcode);
+                    }
+                    res = true;
+                  }else{
+                    tip("获取城市信息失败");
+                    res = false;
+                  }
+                },
+                error: function() {
+                  res = false;
+                  tip("获取城市信息失败");
+                }
+              })
+              
+              return res;
+        }
+        function getWeatherData(adcode) {
+          if(charTimeDis>=5){
+              $.ajax({
+                url:"https://restapi.amap.com/v3/weather/weatherInfo",
+                data: {
+                  city: adcode,
+                  key: "6e7ecd868c360c9671180684d8ec0fa8"
+                },
+                success: function(data){
+                  if(data.status == "1" && data.infocode == "10000"){
+                    var nowCheckTime = new Date();
+                    store.set({
+                      "weather":{
+                        checkTime: nowCheckTime.getFullYear()+"/"+(nowCheckTime.getMonth()/1+1)+"/"+nowCheckTime.getDate()+"/ "+nowCheckTime.getHours()+":"+nowCheckTime.getMinutes()+":"+nowCheckTime.getSeconds(),
+                        result: data
+                      }
+                    })
+                    $(".datereport .weather").text(data.lives[0]["weather"]+"·"+data.lives[0]["temperature"]+"℃")
+                  }else{
+                    tip("获取天气信息失败");
+                  }
+                },
+                error: function(){
+                  tip("获取天气信息失败.");
+                }
+              })
+          }else{
+            let lastWeatherRes = store.get("weather").result;
+            $(".datereport .weather").text(lastWeatherRes.lives[0]["weather"]+"·"+lastWeatherRes.lives[0]["temperature"]+"℃")
+          }
+        }
+        function getWeather(){
+          if(store.get("hitokotoSwitch")==false){
+            if(ip&&ip==store.get("ip")&&store.get("adcode")&&store.get("adcode")!==null){
+                getWeatherData(store.get("adcode"));
+            }else{
+              store.set("ip",ip);
+              var code = getAdcode(function(data){getWeatherData(data)});
+              setTimeout(() => {
+                
+              }, 1000);
+            }
+          }
+        }
+        getWeather()
+        setInterval(() => {
+          getWeather()
+        }, 450000);
+        
+        
+        let timeopt = new Object();
+        timeopt = {
+            month : 6,
+            date : 7,
+            hour : 0,
+            minute : 0,
+            second : 0
+        };
+        if(store.get("timeSet")&&store.get("timeSet")!=null&&store.get("timeSet")!=""){
+            let timeopt2 = {
+                month : store.get('timeSet.month'),
+                date : store.get('timeSet.date'),
+                hour : store.get('timeSet.hour'),
+                minute : store.get('timeSet.minute'),
+                second : store.get('timeSet.second')
+            }
+            function delEmpObj(obj){
+                Object.keys(obj).forEach(item=>{
+                    if(!obj[item])  delete obj[item]
+                })
+                return obj;
+            }
+            var timeopt3 = delEmpObj(timeopt2);
+            $.extend(timeopt,timeopt3)
+        }
+      if(store.get('bigtitle')&&store.get('bigtitle')!=null&&store.get('bigtitle')!=""){
+            $("#bigtitle").text(store.get('bigtitle'));
+      }else{
+          $("#bigtitle").text("高考");
+      }
+      if(store.get('subtitle')&&store.get('subtitle')!=null&&store.get('subtitle')!=""){
+          $("#subtitle").text(store.get('subtitle'));
+      }else{
+          $("#subtitle").text("");
+      }
+      
+    function conYears(){
+      var conYear = "";
+      var Dates = new Date();
+      var month= Dates.getMonth()+1;
+      var date= Dates.getDate();
+      var year = Dates.getFullYear();
+      var getTimeData = year+"/"+timeopt.month+"/"+timeopt.date+"/ "+timeopt.hour+":"+timeopt.minute+":"+timeopt.second;
+      var endtime = new Date(getTimeData);
+      if(endtime<=Dates){
+        conYear = year+1;
+      }else{
+        conYear = year;
+      }
+      return conYear;
+    }
+    let times = function(){
+      var year = conYears();
+      var getTimeData = "/"+timeopt.month+"/"+timeopt.date+"/ "+timeopt.hour+":"+timeopt.minute+":"+timeopt.second;
+      var endtime = new Date(year+getTimeData);
+      var Dates = new Date();
+      var month= Dates.getMonth()+1;
+      var date= Dates.getDate();
+      var year = Dates.getFullYear();
+      var lefttime = endtime.getTime() - Dates.getTime();
+      var leftdays = Math.floor(lefttime/(1000*60*60*24)),
+          lefthours = Math.floor(lefttime/(1000*60*60)%24),
+          leftmimutes = Math.floor(lefttime/(1000*60)%60),
+          leftseconds = Math.floor(lefttime/1000%60);
+      var resarr = {
+          day: leftdays,
+          hour: lefthours,
+          minute: leftmimutes,
+          second: leftseconds
+      }
+      return resarr;
+    }
+    const yearPlace = document.getElementById("year");
+    const day = document.getElementById("day");
+    const detailTime = document.getElementById("time");
+    
+    setInterval (function () {
+      var dateData = times();
+      day.innerHTML = dateData.day;
+      var year = conYears();
+      yearPlace.innerHTML = year;
+      detailTime.innerHTML = dateData.hour+'小时'+dateData.minute+'分钟'+dateData.second+'秒';
+      var newDate = new Date();
+      var newDatemonth= newDate.getMonth()+1;
+      var newDatedate= newDate.getDate();
+      var newDateday= newDate.getDay();
+      var newDateyear = newDate.getFullYear();
+      var weeks = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
+      $(".datereport .year").text(newDateyear);
+      $(".datereport .month").text(newDatemonth);
+      $(".datereport .date").text(newDatedate);
+      $(".datereport .day").text(weeks[newDateday]);
+    }, 100)
+
+    function hitokoto() {
+      if(store.get("hitokotoSwitch")!==false){
+        $(".hitokoto .datereport").remove();
+        let hitokotoType = new Array();
+        hitokotoType = store.get("hitokotoType");
+        if(!store.get("hitokotoType")){
+          hitokotoType=[];
+        }
+        let hitokotoGetType = "";
+        for(i=0;i<hitokotoType.length;i++){
+          if(i==0){
+            hitokotoGetType += "?c="+hitokotoType[i];
+          }else{
+            hitokotoGetType += "&c="+hitokotoType[i];
+          }
+        }
+        if(hitokotoType.length==0){
+          hitokotoGetType = "";
+        }
+        $("#hitokoto").css({"opacity":0});
+        $("#author").css({"opacity":0});
+        fetch('https://v1.hitokoto.cn'+hitokotoGetType)
+          .then(response => response.json())
+          .then(res => {
+            $("#hitokoto").text(res.hitokoto);
+            if(res.from_who){
+              var from_who = res.from_who+" ";
+            }else{
+              var from_who = "";
+            }
+            $("#author").text("——"+from_who+"『"+res.from+"』");
+            $("#hitokoto").css({"opacity":1});
+            $("#author").css({"opacity":1});
+          })
+          .catch(err => {
+            $("#hitokoto").text("Error");
+            $("#author").text("连接Hitokoto服务器失败");
+            $("#hitokoto").css({"opacity":1});
+            $("#author").css({"opacity":1});
+          })
+      }else{
+        $(".hitokoto .container").remove();
+      }
+      
+        
+    }
+    hitokoto();
+    let hitokoto_timer = null;
+    let htime = null;
+    if(store.get("hitokotoSwitch")!==false){
+      htime = 20000;
+      if(store.get("hitokotoTime")){
+        htime = store.get("hitokotoTime");
+      }
+       hitokoto_timer = setInterval(hitokoto, htime);
+    }
+
+    
+    
+    function regetHitokoto() {
+        clearInterval(hitokoto_timer);
+        hitokoto();
+        hitokoto_timer = setInterval(hitokoto, htime);
+    }
+    function copyHitokoto() {
+      clipboard.writeText($(".hitokoto .stc").text());
+      tip("复制成功")
+    }
+    $(document).on("keydown",function(event){
+      if(event.which==112){
+        tip("打开工具箱");
+        $(".openTools").click();
+      }
+      if(event.which==115){
+        tip("关闭倒计时");
+        closeWin('window-close');
+      }
+      if(event.which==116){
+        tip("重新获取Hitokoto");
+        $(".regetHitokoto").click();
+      }
+      if(event.which==121){
+        tip("打开更新");
+        ipcRenderer.send('updateWin');
+      }
+      if(event.which==120){
+        tip("重新加载倒计时");
+        ipcRenderer.send('mainReload');
+      }
+      // tip(event.which)
+    });
+
+
+
+        if(store.get('autoCheckUpdate'!=false)){
+          ipcRenderer.send("check-update");
+          ipcRenderer.on('UpdateMsg', (event, arg) => {
+              switch (arg.state) {
+                  case 1:
+                      if(store.get("autoCheckUpdate")!==false){
+                        ipcRenderer.send('updateWin');
+                      }else{
+                        tip("检测到新版本");
+                      }
+                      $(".openTools .ysdot").css({"display":"block"});
+                      break;
+                  default:
+                      break;
+              }
+          });
+        }
+        
+    </script>
+</body>
+</html>
