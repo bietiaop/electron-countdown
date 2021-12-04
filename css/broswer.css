@@ -17,6 +17,8 @@ html,body {
     background: #3E4557;
     border: 4px solid #3B4254;
     padding-top: 60px;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
 }
 .appbar {
@@ -34,6 +36,7 @@ html,body {
     border-radius: 2vw;
     background: #dbdbdb3b;
     overflow: hidden;
+    z-index: 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999 !important;
 }
 .appbar .drag {
     -webkit-app-region: drag;

@@ -26,10 +26,17 @@
                 <div class="item" data-hoverTip="更换" id="change"></div>
                 <div class="item" data-hoverTip="适合屏幕" id="contain"></div>
                 <div class="item" data-hoverTip="覆盖屏幕" id="cover"></div>
+                <div class="item" data-hoverTip="选择来源" id="source"></div>
             </div>
         </div>
     </div>
-
+    <div class="source">
+      <div class="item">
+        <div class="title"></div>
+        <div class="url"></div>
+        <div class="imgsrc"></div>
+      </div>
+    </div>
 
     <script>window.$ = window.jQuery = require("./js/jquery.min");</script>
     <script src="./js/boxes.jquery.js"></script>
@@ -109,17 +116,93 @@
     $("#cover").click(()=>{
       $(".img").css({"background-size":"cover"})
     })
-
+    let imgSource = new Array();
+    let selectType = 0;
+    let opt = [{
+        "name": "随机萝莉图",
+        "url": "https://www.dmoe.cc/random.php",
+        "requireData": {
+            "return":"json"
+        },
+        "imageSrc": "imgurl"
+    }]
+    function getSource(){
+      $.ajax({
+        url:"https://countdown.bietiaop.top/api/image/config.json",
+        type: "get",
+        async:false,
+        success: function(data){
+          if(data!=store.get("imgSource")){
+            store.set("imgSource",data);
+          }
+        }
+      })
+      if(store.get("imgSource")&&store.get("imgSource")!=null){
+        opt = store.get("imgSource");
+      }
+      for(i=0;i<opt.length;i++){
+        imgSource.push(opt[i])
+      }
+      if(store.get("imgSourceSelect")&&store.get("imgSourceSelect")!=null){
+        selectType = store.get("imgSourceSelect");
+      }
+      insertType();
+      getImage();
+    }
+    getSource();
+    setInterval(() => {
+      getSource();
+    }, 18000000);
+    function insertType(){
+      var html = "";
+      for(i=0;i<imgSource.length;i++){
+        var dm = $('<div><div class="item" data-id='+i+'><div class="title">'+imgSource[i].name+'</div><div class="url">请求地址：'+imgSource[i].url+'</div><div class="imgsrc">图片地址参数：'+imgSource[i].imageSrc+'</div></div></div>');
+        if(i==selectType){
+          dm.find(".item").addClass("selected");
+        }
+        html += dm.html();
+        console.log(dm.html())
+      }
+      $(".source").html(html);
+      $(".source .item").click(function(e){
+        e = e||event;
+        e.stopPropagation();
+        selectType = $(this).attr("data-id");
+        $(".source .selected").removeClass("selected");
+        $(this).addClass("selected");
+        store.set("imgSourceSelect",$(this).attr("data-id"))
+      })
+    }
+    $(document).click(function(){
+      $(".source").slideUp(300)
+    })
+    $("#source").click(function(e){
+      e = e||event;
+      e.stopPropagation();
+      $(".source").slideToggle(300);
+    })
     function getImage() {
+      if(store.get("imgSource")&&store.get("imgSource")!=null){
+        opt = store.get("imgSource");
+      }
+      for(i=0;i<opt.length;i++){
+        imgSource.push(opt[i])
+      }
+      if(store.get("imgSourceSelect")&&store.get("imgSourceSelect")!=null){
+        selectType = store.get("imgSourceSelect");
+        if(selectType/1>=opt.length){
+          selectType = opt.length-1;
+        }
+      }
       loading.start();
       tip("图片加载可能较慢，请稍等");
       $.ajax({
-        url:"https://www.dmoe.cc/random.php",
-        data: {"return":"json"},
+        url: imgSource[selectType].url,
+        data: imgSource[selectType].requireData,
         type: "get",
         success: function(data){
           var imgload = new Image();
-          imgload.src = data.imgurl;
+          imgload.src = data[imgSource[selectType].imageSrc];
           imgload.onerror = ()=>{
             loading.end();
             tip("图片加载失败");
@@ -139,19 +222,19 @@
         }
       })
     }
-    getImage();
     $("#change").click(function(){
       getImage();
+      // ipcRenderer.send("imagedownReload")
     })
     
     $("#download").click(function(){
       tip("开始下载");
-      download($(".img").attr("data-img"), "../Downloads/Images/",downloadFileCallback)
+      download($(".img").attr("data-img"), "./Downloads/Images/",downloadFileCallback)
     })
 
     $("#setwallpaper").click(function(){
       tip("开始下载");
-      download($(".img").attr("data-img"), "../Downloads/Images/",setWallpaperDownload)
+      download($(".img").attr("data-img"), "./Downloads/Images/",setWallpaperDownload)
     })
   
     $(document).on("keydown",function(event){

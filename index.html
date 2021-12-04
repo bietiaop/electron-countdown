@@ -148,7 +148,7 @@
         getWeather()
         setInterval(() => {
           getWeather()
-        }, 450000);
+        }, 90000);
         
         
         let timeopt = new Object();
@@ -193,7 +193,7 @@
       var month= Dates.getMonth()+1;
       var date= Dates.getDate();
       var year = Dates.getFullYear();
-      var getTimeData = year+"/"+timeopt.month+"/"+timeopt.date+"/ "+timeopt.hour+":"+timeopt.minute+":"+timeopt.second;
+      var getTimeData = year+"/"+timeopt.month+"/"+timeopt.date+" "+timeopt.hour+":"+timeopt.minute+":"+timeopt.second;
       var endtime = new Date(getTimeData);
       if(endtime<=Dates){
         conYear = year+1;
@@ -204,7 +204,7 @@
     }
     let times = function(){
       var year = conYears();
-      var getTimeData = "/"+timeopt.month+"/"+timeopt.date+"/ "+timeopt.hour+":"+timeopt.minute+":"+timeopt.second;
+      var getTimeData = "/"+timeopt.month+"/"+timeopt.date+" "+timeopt.hour+":"+timeopt.minute+":"+timeopt.second;
       var endtime = new Date(year+getTimeData);
       var Dates = new Date();
       var month= Dates.getMonth()+1;
@@ -223,6 +223,15 @@
       }
       return resarr;
     }
+    var leftdaytosend = times();
+    sendNotification({
+      title: "还有"+leftdaytosend.day+"天",
+      subtitle: "不要辜负每一分钟",
+      msg: "距离你设定的日期还有"+leftdaytosend.day+"天，今天的你相比昨天的你又怎么样呢？",
+      silent: false,
+      icon: "./img/logo.png",
+      click: "creat60s();"
+    })
     const yearPlace = document.getElementById("year");
     const day = document.getElementById("day");
     const detailTime = document.getElementById("time");
@@ -348,6 +357,14 @@
                         ipcRenderer.send('updateWin');
                       }else{
                         tip("检测到新版本");
+                        sendNotification({
+                          title: "检测到新版本",
+                          subtitle: "检测到新版本",
+                          msg: "倒计时检测到新版本，点击此处打开更新",
+                          silent: false,
+                          icon: "./img/logo.png",
+                          click: "creatUpadteWin();"
+                        })
                       }
                       $(".openTools .ysdot").css({"display":"block"});
                       break;
@@ -356,6 +373,38 @@
               }
           });
         }
+        $.ajax({
+          url: "https://countdown.bietiaop.top/api/notice/notice.json",
+          type: "get",
+          success: function(data){
+            if(data.code==200){
+              function showNotice(){
+                setTimeout(function (){
+                  sendNotification({
+                    title: data.detail.title,
+                    subtitle: data.detail.subtitle,
+                    msg: data.detail.msg,
+                    silent:  data.detail.silent,
+                    icon:  data.detail.icon,
+                    click:  data.detail.click
+                  })
+                }, 3000);
+              }
+              if(store.get("checkNoticeTime")&&store.get("checkNoticeTime")!=null){
+                var noticeDate = new Date(data.date);
+                var lastDate = new Date(store.get("checkNoticeTime"));
+                if(noticeDate>lastDate){
+                  showNotice();
+                  store.set("checkNoticeTime",new Date());
+                }
+              }else{
+                showNotice();
+                store.set("checkNoticeTime",new Date());
+              }
+            }
+            
+          }
+        })
         
     </script>
 </body>

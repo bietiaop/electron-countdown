@@ -33,9 +33,15 @@ function closeWin(page){
                 ipcRenderer.send(page);
             });
         });
-}, 300);
-    
+    }, 300);   
 }
+
+
+function sendNotification(data){
+    ipcRenderer.send('notification',data);
+}
+
+
 $(".tab .item").click(function(){
     playClickMusic("./audio/click_xx.mp3");
     if(!$(this).is(".active")){
@@ -128,6 +134,9 @@ function rollBackToDefault() {
     store.delete("timeSet");
     store.delete("adcode");
     store.delete("ip");
+    store.delete("imgSourceSelect");
+    store.delete("imgSource")
+    store.delete("checkNoticeTime")
     ipcRenderer.send('mainReload');
     alert("已恢复到默认设置");
 }

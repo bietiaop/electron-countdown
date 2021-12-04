@@ -348,6 +348,14 @@ body {
 .wbtn:active {
     background: rgba(233, 233, 233, 0.774);
 }
+
+.wbtn:disabled,.wbtn:disabled:hover,.wbtn:disabled:active {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgb(160, 160, 160);
+    border-bottom: 1px solid rgb(160, 160, 160);
+    color: rgb(190, 190, 190);
+}
+
 .wtext {
     padding: 5px 12px;
     font-size: 1.1rem;

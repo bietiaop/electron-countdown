@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>设置 - 倒计时</title>
     <link rel="stylesheet" href="./css/common.css">
     <link rel="stylesheet" href="./css/boxes.css">
     <link rel="stylesheet" href="./css/settings.css">
 </head>
 <body>
-    <audio id="audio" src='./jjdxy.flac' loop="true" hidden="true"></audio>
+    <audio id="audio" src='./music/jjdxy.flac' loop="true" hidden="true"></audio>
     <div class="winbar">
         
         <div class="item refresh" onclick="ipcRenderer.send('setReload')"></div>
@@ -183,8 +183,8 @@
                 <div class="gotolist">
                     <div class="sitem" id="checkupdates" onclick="update()">检查更新<div style="display: none;" class="dot"></div></div>
                     <div class="sitem" onclick="alert('将会把项目放进Github开源。在隐私条款生成之前使用软件造成的后果自己承担。')">隐私条款</div>
-                    <div class="sitem" onclick="alert('正在整理')">开源协议</div>
-                    <div class="sitem" onclick="browserUrl('http://cutdown.tempest.blue')">关于我们</div>
+                    <div class="sitem" onclick="browserUrl('https://github.com/bietiaop/electron-countdown')">Github</div>
+                    <div class="sitem" onclick="browserUrl('http://countdown.bietiaop.top')">关于我们</div>
                 </div>
                 <div class="copyright">&copy; 2021 小惠(bietiaop) https://www.bietiaop.top All rights reserved.</div>
                 
@@ -249,8 +249,10 @@
         setInterval (function () {
             if(store.get('bgmcb')==true){
                 $("#bgmcb").prop("checked",true);
+                $("#audio")[0].play();
             }else{
                 $("#bgmcb").prop("checked",false);
+                $("#audio")[0].pause();
             }
             if(store.get('autostart')==true){
                 $("#autostart").prop("checked",true);

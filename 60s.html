@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每天60秒读懂世界</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/boxes.css">
+    <link rel="stylesheet" href="./css/broswer.css">
+    <link rel="stylesheet" href="./fontawesome/css/all.min.css">
+    <style>
+        .main {
+            padding: 10px;
+        }
+        .main *{
+            font-family: "OPPO SANS" !important;
+            font-weight: 400;
+            color: rgb(255,255,255);
+            font-size: 5vw;
+        }
+        .main p {
+            margin: 1em auto;
+        }
+        .main p:nth-child(1){
+            font-family: "genshin" !important;
+            font-size: 5vw !important;
+            text-align: center;
+            background: rgb(39, 101, 158);
+            padding: 15vw 0px;
+        }
+        .main p:nth-child(2){
+            font-family: "genshin" !important;
+            font-size: 3vw !important;
+            text-align: center;
+            color: rgb(167, 167, 167);
+            margin: 0 !important;
+        }
+        .main p:nth-last-child(1){
+            font-family: "genshin" !important;
+            font-size: 3.5vw !important;
+            background: rgb(41, 43, 56);
+            padding: 1vw;
+            color: rgb(197, 197, 197);
+        }
+        #change {
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 5px 0px;
+            flex-wrap: nowrap;
+        }
+        #change .wbtn {
+            padding: 5px 0px;
+            flex-shrink: 1;
+            flex-grow: 1;
+            margin: 0px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="appcontainer">
+        <div class="appbar">
+            <div class="drag"></div>
+            <div class="item" id="min" onclick="ipcRenderer.send('60s-min')"></div>
+            <div class="item" id="close"  onclick="ipcRenderer.send('60s-close')"></div>
+        </div>
+        <div id="change">
+            <input onclick="getnews(idx+1)" type="button" class="wbtn" value="前一天">
+            <input onclick="getnews(idx-1)" type="button" class="wbtn" value="后一天">
+            <input onclick="getnews(0)" type="button" class="wbtn" value="最新">
+        </div>
+        <div class="main">
+            
+        </div>
+    </div>
+
+
+    <script>window.$ = window.jQuery = require("./js/jquery.min");</script>
+    <script src="./js/boxes.jquery.js"></script>
+    <script src="./js/common.js"></script>
+    <script>
+    $(document).on("keydown",function(event){
+      if(event.which==37){
+        tip("查询前一天");
+        $("#change input").eq(0).click();
+      }
+      if(event.which==39){
+        tip("查询后一天");
+        $("#change input").eq(1).click();
+      }
+      if(event.which==115){
+        tip("关闭");
+        closeWin('60s-close');
+      }
+      if(event.which==116){
+        tip("刷新新闻");
+        getnews(idx);
+      }
+    //   tip(event.which)
+    });
+    let idx = 0;
+    setInterval(() => {
+        if(idx<=0){
+            $("#change input").eq(1).attr("disabled",true);
+            $("#change input").eq(2).attr("disabled",true);
+        }else{
+            $("#change input").eq(1).attr("disabled",false);
+            $("#change input").eq(2).attr("disabled",false);
+        }
+        if(idx>=30){
+            $("#change input").eq(0).attr("disabled",true);
+        }else{
+            $("#change input").eq(0).attr("disabled",false);
+        }
+    }, 100);
+    function getnews(index){
+        if(index>30){
+            tip("最多查看30天内的哦~");
+        }else if(index<0){
+            tip("已经是最新的新闻，如果不是当天的，可以晚些时间再来查看。")
+        }else{
+            loading.start();
+            $.ajax({
+                url: "https://www.zhihu.com/api/v4/columns/c_1261258401923026944/items",
+                data: {
+                    limit: 1,
+                    offset: index
+                },
+                type: "get",
+                success: function(data){
+                    $(".main").html(data.data[0].content);
+                    $(".main a").remove();
+                    $(".main img").remove();
+                    $(".main figure").remove();
+                    $(".main p")[0].remove();
+                    idx = index;
+                    loading.end();
+                },
+                error: function(e){
+                    tip("获取失败");
+                    loading.end();
+                }
+            })
+        }
+    }
+    getnews(0);
+    </script>
+</body>
+</html>

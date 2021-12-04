@@ -175,3 +175,52 @@ html,body {
 #cover {
     background: url('../fontawesome/svgs/duotone/expand.svg') center /50% no-repeat;
 }
+#source {
+    background: url('../fontawesome/svgs/brands/chrome.svg') center /50% no-repeat;
+}
+
+
+.source {
+    position: fixed;
+    max-width: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    background: rgb(255,255,255);
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+.source .item{
+    padding: 5px;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+.source .item:hover {
+    background: rgb(223, 223, 223);
+}
+.source .selected{
+    background: rgb(41, 41, 41);
+    color: rgb(255,255,255) !important;
+}
+.source .selected *{
+    color: rgb(255,255,255) !important;
+}
+.source .selected:hover{
+    background: rgb(41, 41, 41);
+    color: rgb(255,255,255);
+}
+.source .item .title {
+    font-size: 1.2rem;
+}
+.source .item .url {
+    font-size: 0.8rem;
+    color: rgb(61, 61, 61);
+    font-family: "OPPO SANS" !important;
+}
+.source .item .imgsrc {
+    font-size: 0.8rem;
+    color: rgb(61, 61, 61);
+    font-family: "OPPO SANS" !important;
+}

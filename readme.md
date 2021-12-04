@@ -31,3 +31,13 @@ npm run build
 ```
 
 打包
+
+
+
+
+
+
+
+
+
+> 记一下，可以在"win"里,"requestedExecutionLevel": "highestAvailable"要求管理员权限

@@ -1,8 +1,14 @@
-const {app, BrowserWindow, screen, ipcMain, shell} = require("electron");
+const {app, BrowserWindow, screen, ipcMain, shell, Notification} = require("electron");
 const Store = require('electron-store');
 const path = require('path');
 const store = new Store();
 const { autoUpdater } =require("electron-updater");
+
+
+
+
+
+
 var mainWindow = null;
 var settings = null;
 var updateWin = null;
@@ -10,10 +16,18 @@ var tools = null;
 var weather = null;
 var browser = null;
 var imagedown = null;
+var audioPlayer = null;
+var t60s = null;
+
+
+
+
+
+
+
 app.on('ready',()=>{
-    var size = screen.getPrimaryDisplay().workAreaSize
-    var width = parseInt(size.width * 0.3)
-    // let height = parseInt(size.height * 0.2)
+    var size = screen.getPrimaryDisplay().workAreaSize;
+    var width = parseInt(size.width * 0.3);
     var height = parseInt(size.width * 0.3*0.8);
     mainWindow = new BrowserWindow({
       frame:false,
@@ -75,7 +89,55 @@ ipcMain.on('window-close', function() {
 ipcMain.on('mainReload',function(){
   mainWindow.webContents.reload()
 })
-ipcMain.on('settings',()=>{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ipcMain.on('notification',(event,data)=>{
+  if(Notification.isSupported()){
+    var notification = new Notification({
+      title: data.title,
+      subtitle: data.subtitle,
+      body: data.msg,
+      silent: data.silent,
+      icon: data.icon,
+      timeoutType: 'default'
+    })
+    notification.show();
+    notification.on('click',function(){
+      eval(data.click);
+    })
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function creatSettings(){
   if(settings==null||!settings){
     settings = new BrowserWindow({
       width: 300,
@@ -98,6 +160,9 @@ ipcMain.on('settings',()=>{
     })
   }
   // settings.webContents.openDevTools({mode:'right'});
+}
+ipcMain.on('settings',()=>{
+  creatSettings();
 })
 ipcMain.on('settings-close', function() {
   settings.close();
@@ -105,7 +170,19 @@ ipcMain.on('settings-close', function() {
 ipcMain.on('setReload',function(){
   settings.webContents.reload()
 })
-ipcMain.on('updateWin',()=>{
+
+
+
+
+
+
+
+
+
+
+
+
+function creatUpadteWin() {
   if(updateWin==null||!updateWin){
     updateWin = new BrowserWindow({
       width: 600,
@@ -128,6 +205,9 @@ ipcMain.on('updateWin',()=>{
     updateWin.focus();
   }
   // updateWin.webContents.openDevTools({mode:'right'});
+}
+ipcMain.on('updateWin',()=>{
+  creatUpadteWin();
 })
 ipcMain.on('updateWin-close', function() {
   updateWin.close();
@@ -138,6 +218,15 @@ ipcMain.on('updateReload',function(){
 ipcMain.on('updateWin-min',function(){
   updateWin.minimize();
 })
+
+
+
+
+
+
+
+
+
 
 ipcMain.on('enableAutoStart',function(){
   app.setLoginItemSettings({
@@ -151,11 +240,28 @@ ipcMain.on('disableAutoStart',function(){
   })
 })
 
-ipcMain.on('openTools',function(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function creatTools() {
   if(tools==null||!tools){
     var size = screen.getPrimaryDisplay().workAreaSize
-    var width = parseInt(size.width * 0.5);
-    var height = parseInt(size.width * 0.5*0.6);
+    var width = parseInt(size.width * 0.6);
+    var height = parseInt(size.width * 0.6*0.6);
     tools = new BrowserWindow({
       width: width,
       height: height,
@@ -180,6 +286,9 @@ ipcMain.on('openTools',function(){
     tools.focus();
   }
   // tools.webContents.openDevTools({mode:'right'});
+}
+ipcMain.on('openTools',function(){
+  creatTools();
 })
 ipcMain.on('tools-close', function() {
   tools.close();
@@ -202,7 +311,25 @@ ipcMain.on('tools-max',function(){
 
 
 
-ipcMain.on('weather',function(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function creatWeather() {
   if(weather==null||!weather){
     var size = screen.getPrimaryDisplay().workAreaSize
     var width = parseInt(size.width * 0.35);
@@ -235,6 +362,9 @@ ipcMain.on('weather',function(){
   }
   
   // weather.webContents.openDevTools({mode:'undocked'});
+}
+ipcMain.on('weather',function(){
+  creatWeather();
 })
 ipcMain.on('weather-close', function() {
   weather.close();
@@ -252,6 +382,25 @@ ipcMain.on('weather-max',function(){
     weather.maximize();
   }
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -322,18 +471,32 @@ app.on("web-contents-created", (event, contents) => {
 
 
 
-ipcMain.on('imagedown',function(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function creatImageDown() {
   if(imagedown==null||!imagedown){
-    var size = screen.getPrimaryDisplay().workAreaSize
-    var width = parseInt(size.width * 0.75);
-    var height = parseInt(size.width * 0.75*0.6);
+    var size = screen.getPrimaryDisplay().workAreaSize;
+    var width = parseInt(size.width * 0.7);
+    var height = parseInt(size.width * 0.7*0.7);
     imagedown = new BrowserWindow({
       width: width,
       height: height,
-      minimizable: true,
-      maximizable: true,
       minWidth: 500,
       minHeight: 600,
+      minimizable: true,
+      maximizable: false,
       frame: false,
       resizable: true,
       webPreferences: {
@@ -354,29 +517,9 @@ ipcMain.on('imagedown',function(){
   imagedown.on('closed',()=>{
     imagedown = null;
   })
-  // ipcMain.on("imageDownload",function(event,url,set){
-  //   downloadFile()
-  // })
-  // imagedown.webContents.session.on('will-download', (event, item, webContents) => {
-  //   const filePath = path.join(path.dirname(app.getPath('exe'))+"/Downloads/image/", item.getFilename());
-  //   item.setSavePath(filePath);
-  //   item.once('done', (event, state) => {
-  //     if (state === 'completed') {
-  //       // console.log('download complete')
-  //       // console.log(item.getSavePath())
-  //       // 打开下载后所在的文件夹
-  //       shell.showItemInFolder(item.getSavePath())
-  //       // 以系统默认方式打开
-  //       // shell.openItem(item.getSavePath())
-  //       var data = {
-  //         state:1,
-  //         path:item.getSavePath()
-  //       }
-  //       imagedown.webContents.send('completed',data)
-  //     }
-  //   })
-  // })
-  
+}
+ipcMain.on('imagedown',function(){
+  creatImageDown();
 })
 
 ipcMain.on('imagedown-close', function() {
@@ -398,6 +541,154 @@ ipcMain.on('imagedown-max',function(){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function creatAudioPlayer() {
+  if(audioPlayer==null||!audioPlayer){
+    var size = screen.getPrimaryDisplay().workAreaSize
+    var width = parseInt(size.width * 0.3);
+    var height = parseInt(size.width * 0.3*0.2);
+    audioPlayer = new BrowserWindow({
+      width: width,
+      height: height,
+      minimizable: false,
+      maximizable: false,
+      right: true,
+      minWidth: 300,
+      minHeight: 90,
+      x:screen.getPrimaryDisplay().workAreaSize.width-width-10,
+      y:screen.getPrimaryDisplay().workAreaSize.height-height-screen.getPrimaryDisplay().workAreaSize.height/10,
+      frame: false,
+      resizable: false,
+      webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false,
+          enableRemoteModule: true
+      }
+    })
+    audioPlayer.loadFile("audio.html");
+    // audioPlayer.webContents.openDevTools({mode:'undocked'});
+  }else{
+    audioPlayer.focus();
+  }
+  audioPlayer.on('closed',()=>{
+    audioPlayer = null;
+  })
+}
+ipcMain.on('audioPlayer',function(){
+  creatAudioPlayer();
+})
+
+ipcMain.on('audioPlayer-close', function() {
+  audioPlayer.close();
+})
+ipcMain.on('audioPlayerReload',function(){
+  audioPlayer.webContents.reload();
+})
+ipcMain.on('audioPlayer-min',function(){
+  audioPlayer.minimize();
+})
+ipcMain.on('audioPlayer-max',function(){
+  if(audioPlayer.isMaximized()){
+    audioPlayer.unmaximize();
+  }else{
+    audioPlayer.maximize();
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function creat60s() {
+  if(t60s==null||!t60s){
+    var size = screen.getPrimaryDisplay().workAreaSize
+    var width = parseInt(size.width * 0.35);
+    var height = parseInt(size.width * 0.35*1.2);
+    t60s = new BrowserWindow({
+      width: width,
+      height: height,
+      minimizable: true,
+      maximizable: false,
+      minWidth: 400,
+      minHeight: 600,
+      frame: false,
+      resizable: true,
+      webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false,
+          enableRemoteModule: true
+      }
+    })
+    
+    t60s.loadFile('60s.html');
+    t60s.on('closed',()=>{
+      t60s = null;
+    })
+    
+  }else{
+    t60s.focus();
+  }
+  
+  // t60s.webContents.openDevTools({mode:'undocked'});
+}
+ipcMain.on('60s',function(){
+  creat60s();
+})
+ipcMain.on('60s-close', function() {
+  t60s.close();
+})
+ipcMain.on('60sReload',function(){
+  t60s.webContents.reload();
+})
+ipcMain.on('60s-min',function(){
+  t60s.minimize();
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function Message(window, type, data) {
   var senddata = {
       state: type,
@@ -406,7 +697,7 @@ function Message(window, type, data) {
   window.webContents.send('UpdateMsg', senddata);
   
 }
- const uploadUrl = `http://cutdown.tempest.blue/release`; // 更新包位置
+ const uploadUrl = `http://countdown.tempest.blue/release`; // 更新包位置
  autoUpdater.autoDownload = false;
     autoUpdater.setFeedURL(uploadUrl)
     // 当更新发生错误的时候触发。

@@ -1,0 +1,169 @@
+@charset 'utf-8';
+html,body {
+    background: none;
+    width: 100%;
+    height: 100% !important;
+    padding: 0;
+    margin: 0;
+    transition: 0s;
+    transform: scale(1)  !important;
+    display: block !important;
+    opacity: 1 !important;
+    overflow: hidden;
+}
+.winbar {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    right: 5px;
+    top: 5px;
+    z-index: 9999999999999999999999999999999999999999999999999999999999999999999999;
+}
+.winbar .item {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    margin: 0px 3px;
+}
+#close {
+    background: url("../fontawesome/svgs/light/times.svg") center center /50% no-repeat rgb(197, 197, 197);
+    transition: 0.3s;
+}
+#changeMusic {
+    background: url("../fontawesome/svgs/light/music-alt.svg") center center /50% no-repeat rgb(197, 197, 197);
+    transition: 0.3s;
+}
+#close:hover {
+    background: url("../fontawesome/svgs/light/times.svg") center center /50% no-repeat rgb(117, 117, 117);
+}
+#changeMusic:hover {
+    background: url("../fontawesome/svgs/light/music-alt.svg") center center /50% no-repeat rgb(117, 117, 117);
+}
+.aplayer {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+.aplayer-body {
+    margin: 0 !important;
+    width: 100%;
+    height: 100% !important;
+}
+.aplayer .aplayer-info {
+    height: 100% !important;
+}
+.aplayer-list {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    background: rgb(255,255,255);
+}
+.aplayer-list::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+.aplayer-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.726);
+}
+.aplayer-list::-webkit-scrollbar-track {
+    background: #ededed11;
+    transition: 0.3s;
+}
+.aplayer-list::-webkit-scrollbar-track:hover {
+    background: #ededed49;
+    transition: 0.3s;
+}
+.aplayer-list::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(0, 0, 0);
+}
+#listhide {
+    width: 15px;
+    height: 50vh;
+    border-radius: 0px 3px 3px 0px;
+    background: url("../fontawesome/svgs/light/chevron-left.svg") center no-repeat rgba(138, 138, 138, 0.8);
+    box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.4);
+    background-size: 100% 25%;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translate(0,-50%);
+    z-index: 99999999999999999;
+    display: none;
+}
+#listhide:hover {
+    background: url("../fontawesome/svgs/light/chevron-left.svg") center no-repeat rgba(112, 112, 112, 0.8);
+    background-size: 100% 25%;
+}
+.aplayer-pic {
+    height: 100% !important;
+}
+.aplayer-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: 0;
+}
+.aplayer-bar {
+    height: 5px !important;
+    border-radius: 3px !important;
+}
+.aplayer-loaded {
+    height: 5px !important;
+    border-radius: 3px !important;
+}
+.aplayer-played {
+    height: 5px !important;
+    border-radius: 3px !important;
+}
+.aplayer-thumb {
+    margin-top: -2px !important;
+}
+.aplayer-time-inner {
+    width: 7em !important;
+    display: inline-block;
+    text-align: center !important;
+}
+.aplayer-time-inner *{
+    font-family: "OPPO SANS" !important;
+    font-weight: 600 !important;
+}
+.changeMusicContainer {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    background: rgb(255,255,255);
+    padding: 5px;
+    z-index: 99999;
+}
+.tip {
+    font-size: 0.8rem;
+    color: rgb(128, 128, 128);
+}
+.wtext,.wbtn {
+    color: rgb(0,0,0);
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border: 1px solid rgb(117, 117, 117);
+}
+.changeMusicContainer .inputs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 2px;
+}
+.changeMusicContainer .inputs input {
+    margin: 0px 3px;
+}

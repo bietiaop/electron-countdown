@@ -1,6 +1,6 @@
 {
   "name": "countdown",
-  "version": "2.0.6",
+  "version": "2.1.1-alpha4",
   "description": "countdown",
   "main": "main.js",
   "scripts": {
@@ -9,10 +9,14 @@
   "build": {
     "productName": "countdown",
     "appId": "top.bietiaop.countdown",
+    "asarUnpack":[
+      "./muisc/**/*",
+      "./music.json"
+    ],
     "publish": [
       {
         "provider": "generic",
-        "url": "http://cutdown.tempest.blue/release"
+        "url": "http://countdown.tempest.blue/release"
       }
     ],
     "copyright": "bietiaop",
@@ -22,19 +26,21 @@
     },
     "asar": true,
     "win": {
-      "icon": "./icon.ico",
-      "requestedExecutionLevel": "highestAvailable"
+      "icon": "./nsis/icon.ico"
     },
     "nsis": {
       "oneClick": false,
       "perMachine": true,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
-      "installerIcon": "./icon.ico",
-      "uninstallerIcon": "./icon.ico",
-      "installerHeaderIcon": "./icon.ico",
+      "installerIcon": "./nsis/icon.ico",
+      "uninstallerIcon": "./nsis/remove.ico",
+      "installerHeaderIcon": "./nsis/icon.ico",
+      "installerSidebar": "./nsis/sidebar.bmp",
+      "packElevateHelper": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
+      "uninstallDisplayName":"倒计时",
       "shortcutName": "倒计时"
     }
   },

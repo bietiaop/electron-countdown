@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>播放器</title>
+    <link rel="stylesheet" href="./APlayer/APlayer.min.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/boxes.css">
+    <link rel="stylesheet" href="./css/audio.css">
+    
+</head>
+<body>
+    <div class="winbar">
+        <!-- <div class="item" id="changeMusic"></div> -->
+        <div class="item" id="close" onclick="ipcRenderer.send('audioPlayer-close')"></div>
+        
+    </div>
+    <div class="changeMusicContainer">
+        <div class="title">请输入网易云音乐歌单ID</div>
+        <div class="tip">如果为空则用软件默认的歌单</div>
+        <div class="inputs">
+            <input class="wtext" type="number" id="listid" placeholder="请输入歌单ID"><input type="button" class="wbtn" id="changeList" value="确定"><input type="button" class="wbtn" id="cancelChange" value="取消">
+        </div>
+    </div>
+    <div id="player"></div>
+    <div id="listhide"></div>
+    <script>window.$ = window.jQuery = require("./js/jquery.min");</script>
+    <script src="./js/boxes.jquery.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./APlayer/APlayer.min.js"></script>
+    <script>
+        function creatPlayer(){
+            const ap = new APlayer({
+                container: document.getElementById('player'),
+                mini: false,
+                autoplay: false,
+                loop: 'all',
+                order: 'random',
+                preload: 'auto',
+                volume: 1.0,
+                mutex: false,
+                listFolded: true,
+                audio: []
+            });
+            function changeList(list){
+                ap.list.clear();
+                ap.list.add(list);
+            }
+            $.ajax({
+                url:"./music.json",
+                type: "get",
+                success: function(data){
+                    changeList(data)
+                }
+            })
+            
+            ap.on('listhide', function () {
+                $("#listhide").hide(300);
+            });
+            ap.on('listshow', function () {
+                $("#listhide").show(300);
+            });
+            $("#listhide").click(function(){
+                ap.list.hide();
+            });
+            $(".aplayer-pic").css({"width":$(".aplayer-pic").height()})
+        }
+        
+        $(document).on("keydown",function(event){
+            if(event.which==32){
+                ap.toggle();
+            }
+            if(event.which==38){
+                ap.notice("上一首");
+                ap.skipBack();
+            }
+            if(event.which==40){
+                ap.notice("下一首");
+                ap.skipForward();
+            }
+            if(event.which==112){
+                ap.list.toggle()
+            }
+            if(event.which==115){
+                tip("关闭播放器");
+                closeWin('audioPlayer-close');
+            }
+            if(event.which==116){
+                tip("刷新播放器");
+                ipcRenderer.send('audioPlayerReload');
+            }
+            // tip(event.which)
+        });
+
+        $("input[type=number]").click(function(e){
+            e = e||event;
+            e.stopPropagation();
+            e.preventDefault();
+        })
+        $("#changeMusic").click(function(){
+            $(".changeMusicContainer").toggle(300);
+        })
+        $("#cancelChange").click(function(){
+            $(".changeMusicContainer").hide(300);
+        })
+
+        function getMusic(){
+            $.ajax({
+                url:"https://countdown.bietiaop.top/api/music/list.json",
+                type: "get",
+                async: true,
+                success: function(data){
+                    if(data.code==200){
+                        var musicList = new Array();
+                        creatPlayer();
+                        changeList(data.list);
+                    }else{
+                        creatPlayer();
+                    }
+                },
+                error: function(e){
+                    creatPlayer();
+                }
+            })
+        }
+        getMusic();
+
+
+        $("#changeList").click(function(){
+            tip("还没找到API接口");
+        })
+    </script>
+</body>
+</html>
