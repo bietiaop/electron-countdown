@@ -3,7 +3,7 @@ const Store = require('electron-store');
 const path = require('path');
 const store = new Store();
 const { autoUpdater } =require("electron-updater");
-
+app.setAppUserModelId('倒计时');
 
 
 
@@ -510,10 +510,6 @@ function creatImageDown() {
   }else{
     imagedown.focus();
   }
-  ipcMain.on('getAppPath',function(event){
-    var appPath  = path.dirname(app.getPath("exe"));
-    imagedown.webContents.send("appPath",appPath);
-  })
   imagedown.on('closed',()=>{
     imagedown = null;
   })

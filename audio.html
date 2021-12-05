@@ -66,23 +66,25 @@
                 ap.list.hide();
             });
             $(".aplayer-pic").css({"width":$(".aplayer-pic").height()})
+            $(document).on("keydown",function(event){
+                if(event.which==32){
+                    ap.toggle();
+                }
+                if(event.which==38){
+                    ap.notice("上一首");
+                    ap.skipBack();
+                }
+                if(event.which==40){
+                    ap.notice("下一首");
+                    ap.skipForward();
+                }
+                if(event.which==112){
+                    ap.list.toggle()
+                }
+            });
         }
         
         $(document).on("keydown",function(event){
-            if(event.which==32){
-                ap.toggle();
-            }
-            if(event.which==38){
-                ap.notice("上一首");
-                ap.skipBack();
-            }
-            if(event.which==40){
-                ap.notice("下一首");
-                ap.skipForward();
-            }
-            if(event.which==112){
-                ap.list.toggle()
-            }
             if(event.which==115){
                 tip("关闭播放器");
                 closeWin('audioPlayer-close');

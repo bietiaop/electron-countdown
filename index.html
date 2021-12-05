@@ -327,6 +327,14 @@
         tip("打开工具箱");
         $(".openTools").click();
       }
+      if(event.which==113){
+        tip("打开设置");
+        ipcRenderer.send("settings");
+      }
+      if(event.which==114){
+        tip("打开天气");
+        ipcRenderer.send("weather");
+      }
       if(event.which==115){
         tip("关闭倒计时");
         closeWin('window-close');
@@ -334,6 +342,18 @@
       if(event.which==116){
         tip("重新获取Hitokoto");
         $(".regetHitokoto").click();
+      }
+      if(event.which==117){
+        tip("打开随机壁纸");
+        ipcRenderer.send("imagedown");
+      }
+      if(event.which==118){
+        tip("打开音乐播放器");
+        ipcRenderer.send("audioPlayer");
+      }
+      if(event.which==119){
+        tip("打开每日60s");
+        ipcRenderer.send("60s");
       }
       if(event.which==121){
         tip("打开更新");
