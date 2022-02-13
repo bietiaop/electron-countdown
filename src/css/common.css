@@ -141,7 +141,7 @@ input{
     content: '';
     display: block;
     height: 3vw;
-    width: 90%;
+    width: 86vw;
     background: url("../img/gs-item/dvdl.png") center no-repeat;
     background-size: contain;
     margin: 0 auto;
@@ -197,6 +197,7 @@ input{
 }
 .ys_modal_item .ysbtns {
     width: 100%;
+    left: 0;
     text-align: center;
 }
 .ys_modal_item .ysbtns::before {

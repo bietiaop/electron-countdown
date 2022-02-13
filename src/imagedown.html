@@ -42,6 +42,7 @@
     <script src="./js/boxes.jquery.js"></script>
     <script src="./js/common.js"></script>
     <script>
+      let getImageErrorCode = 0;
     // ---- 下载类 ---- //
     function StreamDownload() {
       this.downloadCallback = null;
@@ -94,7 +95,7 @@
     let downloads = new StreamDownload();
     function downloadFileCallback(arg, percentage, dir) {
         if (arg === "progress") {
-            tip("已下载"+percentage)
+          tip("已下载"+percentage.toFixed(2)+"%")
         } else if (arg === "finished") {
           var path = require("path");
             tip("下载完成，保存在:"+path.resolve(dir)+"\\"+path.basename($(".img").attr("data-img")));
@@ -102,9 +103,9 @@
     }
     function setWallpaperDownload(arg, percentage,dir) {
         if (arg === "progress") {
-            tip("已下载"+percentage)
+            tip("已下载"+percentage.toFixed(2)+"%")
         } else if (arg === "finished") {
-          tip("下载完成，保存在:"+path.resolve(dir)+"\\"+path.basename($(".img").attr("data-img")));
+          // tip("下载完成，保存在:"+path.resolve(dir)+"\\"+path.basename($(".img").attr("data-img")));
           changeWallpaper(path.resolve(dir)+"\\"+path.basename($(".img").attr("data-img")))
         }
     }
@@ -181,46 +182,61 @@
       e.stopPropagation();
       $(".source").slideToggle(300);
     })
+    
+    
     function getImage() {
-      if(store.get("imgSource")&&store.get("imgSource")!=null){
-        opt = store.get("imgSource");
-      }
-      for(i=0;i<opt.length;i++){
-        imgSource.push(opt[i])
-      }
-      if(store.get("imgSourceSelect")&&store.get("imgSourceSelect")!=null){
-        selectType = store.get("imgSourceSelect");
-        if(selectType/1>=opt.length){
-          selectType = opt.length-1;
-        }
-      }
       loading.start();
-      tip("图片加载可能较慢，请稍等");
-      $.ajax({
-        url: imgSource[selectType].url,
-        data: imgSource[selectType].requireData,
-        type: "get",
-        success: function(data){
-          var imgload = new Image();
-          imgload.src = data[imgSource[selectType].imageSrc];
-          imgload.onerror = ()=>{
-            loading.end();
-            tip("图片加载失败");
+      if(!getImageErrorCode||getImageErrorCode == null){
+        let getImageErrorCode = 0;
+      }
+      if(getImageErrorCode<5){
+        if(store.get("imgSource")&&store.get("imgSource")!=null){
+          opt = store.get("imgSource");
+        }
+        for(i=0;i<opt.length;i++){
+          imgSource.push(opt[i])
+        }
+        if(store.get("imgSourceSelect")&&store.get("imgSourceSelect")!=null){
+          selectType = store.get("imgSourceSelect");
+          if(selectType/1>=opt.length){
+            selectType = opt.length-1;
+          }
+        }
+        $.ajax({
+          url: imgSource[selectType].url,
+          data: imgSource[selectType].requireData,
+          type: "get",
+          success: function(data){
+            var imgload = new Image();
+            imgload.src = data[imgSource[selectType].imageSrc];
+            imgload.onerror = ()=>{
+              loading.end();
+              tip("图片加载失败，重新获取…");
+              getImageErrorCode++;
+              getImage();
+            }
+            imgload.onload = function(){
+              loading.end();
+              if(this.complete){
+                getImageErrorCode = 0;
+                $(".img").css({"background":'url("'+imgload.src+'")',"background-size":$(".img").css("background-size"),"background-position":"center","background-repeat":"no-repeat"});
+                $(".img").attr("data-img",imgload.src);
+              }
+            }
+          },
+          error: function(){
+            tip("获取失败，重试…");
+            getImageErrorCode++;
             getImage();
           }
-          imgload.onload = function(){
-            loading.end();
-            if(this.complete){
-              $(".img").css({"background":'url("'+imgload.src+'")',"background-size":$(".img").css("background-size"),"background-position":"center","background-repeat":"no-repeat"});
-              $(".img").attr("data-img",imgload.src);
-            }
-          }
-        },
-        error: function(){
-          tip("获取失败");
-          getImage();
-        }
-      })
+        })
+      }else{
+        loading.end();
+        tip("获取失败");
+        alert("获取失败超过5次，已自动取消。");
+        getImageErrorCode = 0;
+      }
+      
     }
     $("#change").click(function(){
       getImage();
@@ -228,13 +244,23 @@
     })
     
     $("#download").click(function(){
-      tip("开始下载");
-      download($(".img").attr("data-img"), "./Downloads/Images/",downloadFileCallback)
+      
+      if($(".img").attr("data-img")&&$(".img").attr("data-img")!=null){
+        tip("开始下载");
+        download($(".img").attr("data-img"), "./Downloads/Images/",downloadFileCallback)
+      }else{
+        tip("参数错误");
+      }
+      
     })
 
     $("#setwallpaper").click(function(){
-      tip("开始下载");
-      download($(".img").attr("data-img"), "./Downloads/Images/",setWallpaperDownload)
+      if($(".img").attr("data-img")&&$(".img").attr("data-img")!=null){
+        tip("正在设置");
+        download($(".img").attr("data-img"), "./Downloads/Images/",setWallpaperDownload)
+      }else{
+        tip("参数错误");
+      }
     })
   
     $(document).on("keydown",function(event){

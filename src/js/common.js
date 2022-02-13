@@ -8,8 +8,11 @@ let https = require("https");
 let request = require('request');
 let fs = require('fs');
 let cmd= require('node-cmd');
-var package = require("./package.json");
+var package = require("../package.json");
+const cp = require('child_process');
 const exec = require('child_process').exec;
+const { execFile } = require('child_process');
+
 let appVersion = package.version;
 $(function(){
     $("body").css({ "transform": "scale(1)" });
@@ -84,35 +87,23 @@ function url(url){
 function browserUrl(url){
     ipcRenderer.send("browserUrl",url);
 }
-$("input[type=text]").click(function(){
-    exec("osk.exe");
-})
-$("input[type=password]").click(function(){
-    exec("osk.exe");
-})
-$("input[type=email]").click(function(){
-    exec("osk.exe");
-})
-$("input[type=number]").click(function(){
-    exec("osk.exe");
-})
-$("input[type=tel]").click(function(){
-    exec("osk.exe");
-})
-$("textarea").click(function(){
-    exec("osk.exe");
-})
 function changeWallpaper(addr){
     if(addr&&addr!=null){
-        var command = 'reg add "hkcu\\control panel\\desktop" /v wallpaper /d "'+addr+'" /f';
-        cmd.run(command);
-        cmd.run('RunDll32.exe USER32.DLL,UpdatePerUserSystemParameters');
-        for(i=0;i<50;i++){
-            setTimeout(() => {
-                cmd.run('RunDll32.exe USER32.DLL,UpdatePerUserSystemParameters');
-            }, i*200);
-        }
-        tip("设置壁纸，如果失败多试几次。")
+        // var command = 'reg add "hkcu\\control panel\\desktop" /v wallpaper /d "'+addr+'" /f';
+        // cmd.run(command);
+        // cmd.run('RunDll32.exe USER32.DLL,UpdatePerUserSystemParameters');
+        // for(i=0;i<50;i++){
+        //     setTimeout(() => {
+        //         cmd.run('RunDll32.exe USER32.DLL,UpdatePerUserSystemParameters');
+        //     }, i*200);
+        // }
+        // tip("设置壁纸，如果失败多试几次。")
+        var exefile = path.resolve("./src/windows-wallpaper.exe")
+        cp.execFile(exefile,[addr],function(err,msg){
+            if(!err){
+                alert("设置成功！")
+            }
+        })
     }
 }
 

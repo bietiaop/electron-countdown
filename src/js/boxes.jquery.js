@@ -9,10 +9,10 @@ function alert(content,ok){
         </div>
     </div>
     `)
-    
     alertBox.find(".alertBox").css({ "transform": "scale(0.8)"});
     $("body").append(alertBox);
     $("html").css({"overflow":"hidden"});
+    alertBox.find("input[name='ok']").focus();
     alertBox.find(".alertBox").fadeTo(0, 1, function() {
         alertBox.find(".alertBox").css({ "transform": "scale(1)"});
         alertBox.find(".alertBox").slideDown(100);
@@ -42,7 +42,6 @@ function confirm(content,confirm){
         </div>
     </div>
     `)
-    
     confirmBox.find(".confirmBox").css({ "transform": "scale(0.8)"});
     $("body").append(confirmBox);
     $("html").css({"overflow":"hidden"});
@@ -50,6 +49,7 @@ function confirm(content,confirm){
         confirmBox.find(".confirmBox").css({ "transform": "scale(1)"});
         confirmBox.find(".confirmBox").slideDown(100);
     });
+    confirmBox.find("input[name='confirm']").focus();
     confirmBox.find("input[name='cancel']").click(function(){
         confirmBox.find(".confirmBox").css({ "transform": "scale(0.8)" });
         confirmBox.find(".confirmBox").fadeTo(50, 0.01, function() {
@@ -96,6 +96,7 @@ function prompt(text,value,fun){
     promptBox.find(".promptBox").css({ "transform": "scale(0.8)"});
     $("body").append(promptBox);
     $("html").css({"overflow":"hidden"});
+    promptBox.find(".promptBox[type=text]").focus();
     promptBox.find(".promptBox").fadeTo(0, 1, function() {
         promptBox.find(".promptBox").css({ "transform": "scale(1)"});
         promptBox.find(".promptBox").slideDown(100);

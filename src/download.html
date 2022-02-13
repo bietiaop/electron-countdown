@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更新</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/boxes.css">
+    <link rel="stylesheet" href="./css/update.css">
+</head>
+<body>
+    <div class="minwin" onclick="ipcRenderer.send('updateWin-min')"><span></span></div>
+    <div class="main">
+        
+        <div class="nav">
+            <div class="title">倒计时更新程序</div>
+            <div class="statue">正在检查更新</div>
+            <div class="downloadlinebox" style="display: none;">
+                <div class="downloadline">
+                    <div class="downloadprocess" style="width: 0%;"></div>
+                </div>
+                <div class="per">0%</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="btns">
+        <input type="button" class="download active" name="" id="" value="下载">
+        <input type="button" class="cancel" onclick="closeWin('updateWin-close')" value="取消">
+    </div>
+    <script>window.$ = window.jQuery = require("./js/jquery.min");</script>
+    <script src="./js/boxes.jquery.js"></script>
+    <script src="./js/common.js"></script>
+    <script>
+    function StreamDownload() {
+      this.downloadCallback = null;
+      percentage = null;
+    }
+    StreamDownload.prototype.showProgress = function (received, total) {
+      percentage = (received * 100) / total;
+      this.downloadCallback('progress', percentage, 0, 0);
+    };
+    StreamDownload.prototype.downloadFile = function (fileName, patchUrl, baseDir, callback) {
+      this.downloadCallback = callback;
+      const downloadFile = fileName;
+      let receivedBytes = 0;
+      let totalBytes = 0;
+      const req = request({
+        method: 'GET',
+        uri: patchUrl
+      });
+      const out = fs.createWriteStream(path.join(baseDir, downloadFile));
+      req.pipe(out);
+      req.on('response', (data) => {
+        totalBytes = parseInt(data.headers['content-length'], 10);
+      });
+      req.on('data', (chunk) => {
+        receivedBytes += chunk.length;
+        this.showProgress(receivedBytes, totalBytes);
+      });
+      req.on('end', () => {
+        this.downloadCallback('finished', percentage, baseDir, downloadFile);
+      });
+    }
+    function mkdirs(dirname, callback) {  
+        fs.exists(dirname, function (exists) {  
+            if (exists) {  
+                callback();  
+            } else {
+                mkdirs(path.dirname(dirname), function () {  
+                    fs.mkdir(dirname, function(){
+                      fs.mkdir(dirname,callback)
+                    });
+                });  
+            }  
+        });  
+    }  
+    function download(url,dir,callback){
+      mkdirs(dir,function(){
+        downloads.downloadFile(path.basename(url),url,dir,callback)
+      })
+    }
+    let downloads = new StreamDownload();
+    function downloadFileCallback(arg, percentage, dir, downloadFile) {
+        if (arg === "progress") {
+          tip("已下载"+percentage.toFixed(2)+"%")
+        } else if (arg === "finished") {
+          var path = require("path");
+          console.log(path.resolve(dir)+"\\"+path.basename(downloadFile))
+            tip("下载完成，保存在:"+path.resolve(dir)+"\\"+path.basename(downloadFile));
+        }
+    }
+        $(".download").click(function(){
+            tip("开始下载");
+            download("https://blog.csdn.net/weixin_33957648/article/details/tmp.asar", "resources/",downloadFileCallback)
+        })
+        $(document).on("keydown",function(event){
+            if(event.which==115){
+                tip("关闭更新");
+                closeWin('updateWin-close');
+            }
+            if(event.which==116){
+                tip("刷新更新页面");
+                ipcRenderer.send("updateReload");
+            }
+            if(event.which==117){
+                tip("最小化");
+                ipcRenderer.send("updateWin-min");
+            }
+            if(event.which==13){
+                $(".active").click();
+            }
+        });
+    </script>
+</body>
+</html>

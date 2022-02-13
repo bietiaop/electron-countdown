@@ -1,6 +1,6 @@
 {
   "name": "countdown",
-  "version": "2.2.2",
+  "version": "2.2.4",
   "description": "countdown",
   "main": "main.js",
   "scripts": {
@@ -9,9 +9,15 @@
   "build": {
     "productName": "countdown",
     "appId": "top.bietiaop.countdown",
-    "asarUnpack":[
-      "./muisc/**/*",
-      "./music.json"
+    "asarUnpack": [
+      "src/audio/**/*",
+      "src/music.json",
+      "node_modules/**/*",
+      "src/fonts/**/*",
+      "src/music/**/*",
+      "src/fontawesome/**/*",
+      "src/genshin.ttf",
+      "src/windows-wallpaper.exe"
     ],
     "publish": [
       {
@@ -40,7 +46,7 @@
       "packElevateHelper": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "uninstallDisplayName":"倒计时",
+      "uninstallDisplayName": "倒计时",
       "shortcutName": "倒计时"
     }
   },
@@ -51,7 +57,8 @@
     "electron-store": "^8.0.1",
     "electron-updater": "^4.3.9",
     "node-cmd": "^5.0.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "wallpaper": "^6.1.1"
   },
   "devDependencies": {
     "electron": "^16.0.2",

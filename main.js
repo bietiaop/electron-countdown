@@ -41,13 +41,15 @@ app.on('ready',()=>{
       transparent: true,
       hasShadow: false,
       focusable: true,
+      nodeIntegration: true,
       webPreferences: {
-          nodeIntegration: true,
           contextIsolation: false,
+          nodeIntegration: true,
+          
           enableRemoteModule: true
       }
     })
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile('./src/index.html');
     mainWindow.setSkipTaskbar(true);
     // mainWindow.setMenu(null);
     // mainWindow.webContents.openDevTools({mode:'undocked'});
@@ -153,7 +155,7 @@ function creatSettings(){
           enableRemoteModule: true
       }
     })
-    settings.loadFile('settings.html');
+    settings.loadFile('./src/settings.html');
     // mainWindow.setMenu(null);
     settings.on('closed',()=>{
       settings = null;
@@ -196,7 +198,7 @@ function creatUpadteWin() {
           enableRemoteModule: true
       }
     })
-    updateWin.loadFile('update.html');
+    updateWin.loadFile('./src/update.html');
     // mainWindow.setMenu(null);
     updateWin.on('closed',()=>{
       updateWin = null;
@@ -277,7 +279,7 @@ function creatTools() {
           enableRemoteModule: true
       }
     })
-    tools.loadFile('tools.html');
+    tools.loadFile('./src/tools.html');
     // tools.setMenu(null);
     tools.on('closed',()=>{
       tools = null;
@@ -351,7 +353,7 @@ function creatWeather() {
       }
     })
     
-    weather.loadFile('weather.html');
+    weather.loadFile('./src/weather.html');
     // weather.setMenu(null);
     weather.on('closed',()=>{
       weather = null;
@@ -426,7 +428,7 @@ function browserUrl(url) {
           webviewTag: true //开启webview标签渲染
       }
     })
-    browser.loadFile("browser.html");
+    browser.loadFile("./src/browser.html");
     setTimeout(() => {
       browser.webContents.send('openUrl', url);
     }, 1000);
@@ -505,7 +507,7 @@ function creatImageDown() {
           enableRemoteModule: true
       }
     })
-    imagedown.loadFile("imagedown.html");
+    imagedown.loadFile("./src/imagedown.html");
     // imagedown.webContents.openDevTools({mode:'undocked'});
   }else{
     imagedown.focus();
@@ -578,7 +580,7 @@ function creatAudioPlayer() {
           enableRemoteModule: true
       }
     })
-    audioPlayer.loadFile("audio.html");
+    audioPlayer.loadFile("./src/audio.html");
     // audioPlayer.webContents.openDevTools({mode:'undocked'});
   }else{
     audioPlayer.focus();
@@ -644,7 +646,7 @@ function creat60s() {
       }
     })
     
-    t60s.loadFile('60s.html');
+    t60s.loadFile('./src/60s.html');
     t60s.on('closed',()=>{
       t60s = null;
     })
